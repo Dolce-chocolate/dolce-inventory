@@ -1,3 +1,4 @@
+// app/page.js
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -6,9 +7,9 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // تحويل تلقائي من الصفحة الرئيسية إلى صفحة لوحة التحكم
-    router.push("/dashboard");
+    // التوجيه إلى صفحة تسجيل الدخول الموحدة
+    router.replace("/unified-login");
   }, [router]);
 
-  return null; // لا تعرض أي شيء لأننا نحول المستخدم مباشرة
+  return null;
 }
