@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* تخصيص عام للصفحة */
+body {
+  background-color: #fefae0; /* كريمي */
+  color: #3e2c1a;            /* شوكلاطة */
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* تنسيق افتراضي للصور */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* تنسيق إضافي للبطاقات لو احتجته */
+.card {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
