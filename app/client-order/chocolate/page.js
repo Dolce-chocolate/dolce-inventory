@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+// Firebase imports
+import { db } from "../../../firebase";
+import { collection, onSnapshot, addDoc } from "firebase/firestore";
+
 export default function ChocolateClientOrder() {
   const router = useRouter();
   const [chocolateStock, setChocolateStock] = useState([]);
@@ -16,20 +20,29 @@ export default function ChocolateClientOrder() {
     }
   }, [router]);
 
+  // تحميل البيانات من Firebase ومزامنتها
   useEffect(() => {
-    const stock = JSON.parse(localStorage.getItem("chocolate") || "[]");
-    const sortedStock = stock.sort((a, b) => Number(b.weight || 0) - Number(a.weight || 0));
-    setChocolateStock(sortedStock);
+    const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
+      const allProducts = snapshot.docs
+        .map((doc) => ({ id: doc.id, ...doc.data() }))
+        .filter((item) => item.category === "chocolate");
+
+      const sortedStock = allProducts.sort((a, b) => Number(b.weight || 0) - Number(a.weight || 0));
+      setChocolateStock(sortedStock);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleQuantityChange = (code, value) => {
     setOrder({ ...order, [code]: value });
   };
 
-  const handleSubmit = () => {
+  // ✅ إرسال الطلبات إلى Firebase
+  const handleSubmit = async () => {
     const today = new Date().toISOString().split("T")[0];
     const currentUser = localStorage.getItem("currentUser") || "عميل مجهول";
-    const oldOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+
     const newOrders = Object.entries(order)
       .filter(([, qty]) => Number(qty) > 0)
       .map(([code, quantity]) => {
@@ -44,9 +57,16 @@ export default function ChocolateClientOrder() {
         };
       });
 
-    localStorage.setItem("orders", JSON.stringify([...oldOrders, ...newOrders]));
-    alert("✅ تم إرسال الطلب بنجاح");
-    router.push("/client-home");
+    try {
+      for (const orderItem of newOrders) {
+        await addDoc(collection(db, "orders"), orderItem);
+      }
+      alert("✅ تم إرسال الطلب بنجاح إلى Firebase");
+      router.push("/client-home");
+    } catch (error) {
+      console.error("❌ فشل إرسال الطلب:", error);
+      alert("حدث خطأ أثناء إرسال الطلب.");
+    }
   };
 
   const totalWeight = chocolateStock.reduce((sum, item) => sum + Number(item.weight || 0), 0);
