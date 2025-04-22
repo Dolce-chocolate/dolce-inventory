@@ -45,7 +45,7 @@ export default function ChocolateClientOrder() {
         const product = chocolateStock.find((item) => item.code === code);
         return {
           client: currentUser,
-          product: product.name,
+          product: product?.name || "منتج غير معروف",
           code,
           quantity,
           status: "بانتظار الصرف",
@@ -57,11 +57,11 @@ export default function ChocolateClientOrder() {
       for (const orderItem of newOrders) {
         await addDoc(collection(db, "orders"), orderItem);
       }
-      alert("✅ تم إرسال الطلب بنجاح إلى Firebase");
+      alert("✅ تم إرسال الطلب بنجاح");
       router.push("/client-home");
     } catch (error) {
-      console.error("❌ فشل إرسال الطلب:", error);
-      alert("حدث خطأ أثناء إرسال الطلب.");
+      console.error("خطأ في إرسال الطلب:", error);
+      alert("❌ حدث خطأ أثناء إرسال الطلب. راجع الكونسول.");
     }
   };
 
