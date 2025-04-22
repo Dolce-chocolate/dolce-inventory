@@ -20,7 +20,6 @@ export default function ChocolateClientOrder() {
     }
   }, [router]);
 
-  // تحميل البيانات من Firebase ومزامنتها
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
       const allProducts = snapshot.docs
@@ -38,7 +37,6 @@ export default function ChocolateClientOrder() {
     setOrder({ ...order, [code]: value });
   };
 
-  // ✅ إرسال الطلبات إلى Firebase
   const handleSubmit = async () => {
     const today = new Date().toISOString().split("T")[0];
     const currentUser = localStorage.getItem("currentUser") || "عميل مجهول";
@@ -57,14 +55,18 @@ export default function ChocolateClientOrder() {
         };
       });
 
+    console.log("🟡 الطلبات الجاهزة للإرسال:", newOrders);
+
     try {
       for (const orderItem of newOrders) {
-        await addDoc(collection(db, "orders"), orderItem);
+        const docRef = await addDoc(collection(db, "orders"), orderItem);
+        console.log("✅ تم حفظ الطلب في Firebase بالمعرف:", docRef.id, orderItem);
       }
+
       alert("✅ تم إرسال الطلب بنجاح إلى Firebase");
       router.push("/client-home");
     } catch (error) {
-      console.error("❌ فشل إرسال الطلب:", error);
+      console.error("❌ فشل إرسال الطلب إلى Firebase:", error);
       alert("حدث خطأ أثناء إرسال الطلب.");
     }
   };
