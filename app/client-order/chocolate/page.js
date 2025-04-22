@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-// Firebase imports
-import { db } from "../../../firebase";
+import { db } from "@/app/firebase";
 import { collection, onSnapshot, addDoc } from "firebase/firestore";
 
 export default function ChocolateClientOrder() {
@@ -55,18 +53,14 @@ export default function ChocolateClientOrder() {
         };
       });
 
-    console.log("🟡 الطلبات الجاهزة للإرسال:", newOrders);
-
     try {
       for (const orderItem of newOrders) {
-        const docRef = await addDoc(collection(db, "orders"), orderItem);
-        console.log("✅ تم حفظ الطلب في Firebase بالمعرف:", docRef.id, orderItem);
+        await addDoc(collection(db, "orders"), orderItem);
       }
-
       alert("✅ تم إرسال الطلب بنجاح إلى Firebase");
       router.push("/client-home");
     } catch (error) {
-      console.error("❌ فشل إرسال الطلب إلى Firebase:", error);
+      console.error("❌ فشل إرسال الطلب:", error);
       alert("حدث خطأ أثناء إرسال الطلب.");
     }
   };
