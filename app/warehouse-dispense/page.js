@@ -1,52 +1,47 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { db } from "../../../firebase";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "@/app/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
-export default function WarehouseDispense() {
-  const [orders, setOrders] = useState([]);
+export default function WarehouseDispensePage() {
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const q = query(collection(db, "orders"), where("status", "==", "بانتظار الصرف"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const liveOrders = snapshot.docs.map(doc => ({
+    const fetchData = async () => {
+      const snapshot = await getDocs(collection(db, "products"));
+      const allProducts = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
-      setOrders(liveOrders);
-    });
+      setProducts(allProducts);
+    };
 
-    return () => unsubscribe();
+    fetchData();
   }, []);
 
   return (
-    <main className="min-h-screen bg-amber-50 p-6 text-chocolate">
-      <h1 className="text-2xl font-bold mb-6 text-center">📦 طلبات العملاء - أمين المخزن</h1>
-
-      {orders.length === 0 ? (
-        <p className="text-center">لا توجد طلبات حالياً.</p>
+    <main className="p-6">
+      <h1 className="text-xl font-bold mb-4">📦 صفحة أمين المخزن</h1>
+      {products.length === 0 ? (
+        <p>لا توجد منتجات حالياً.</p>
       ) : (
         <table className="min-w-full border text-sm">
           <thead>
-            <tr className="bg-chocolate text-white">
-              <th className="border px-2 py-1">العميل</th>
-              <th className="border px-2 py-1">المنتج</th>
+            <tr className="bg-gray-200">
               <th className="border px-2 py-1">الكود</th>
-              <th className="border px-2 py-1">الكمية</th>
-              <th className="border px-2 py-1">التاريخ</th>
-              <th className="border px-2 py-1">الحالة</th>
+              <th className="border px-2 py-1">الاسم</th>
+              <th className="border px-2 py-1">العدد</th>
+              <th className="border px-2 py-1">الوزن</th>
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr key={order.id} className="hover:bg-amber-100">
-                <td className="border px-2 py-1">{order.client}</td>
-                <td className="border px-2 py-1">{order.product}</td>
-                <td className="border px-2 py-1">{order.code}</td>
-                <td className="border px-2 py-1">{order.quantity}</td>
-                <td className="border px-2 py-1">{order.date}</td>
-                <td className="border px-2 py-1 text-red-600">{order.status}</td>
+            {products.map((item) => (
+              <tr key={item.id}>
+                <td className="border px-2 py-1">{item.code}</td>
+                <td className="border px-2 py-1">{item.name}</td>
+                <td className="border px-2 py-1">{item.quantity}</td>
+                <td className="border px-2 py-1">{item.weight}</td>
               </tr>
             ))}
           </tbody>
