@@ -47,7 +47,7 @@ export default function ChocolateStockPage() {
               {products.map((item) => (
                 <tr key={item.id} className="text-center">
                   <td className="border px-2 py-1">
-                    <div className="w-14 h-14 overflow-hidden mx-auto">
+                    <div className="w-[60px] h-[60px] overflow-hidden mx-auto">
                       <img
                         src={`/${item.image}`}
                         alt={item.name}
