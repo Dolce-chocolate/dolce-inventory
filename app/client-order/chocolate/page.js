@@ -69,16 +69,16 @@ export default function ChocolateClientOrder() {
   const totalBoxes = chocolateStock.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
 
   return (
-    <main className="bg-amber-50 min-h-screen p-6 text-chocolate text-center">
-      <h1 className="text-2xl font-bold mb-6">🍫 طلب من مخزن الشكلاطة</h1>
+    <main className="bg-amber-50 min-h-screen p-4 text-chocolate">
+      <h1 className="text-2xl font-bold text-center mb-6">🍫 طلب من مخزن الشكلاطة</h1>
 
       {chocolateStock.length === 0 ? (
-        <p>لا توجد أصناف متاحة حاليًا.</p>
+        <p className="text-center">لا توجد أصناف متاحة حاليًا.</p>
       ) : (
-        <>
-          <table className="min-w-full border mb-6 text-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full border border-collapse text-sm">
             <thead>
-              <tr className="bg-chocolate text-white">
+              <tr className="bg-chocolate text-white text-center">
                 <th className="border px-2 py-1">الصورة</th>
                 <th className="border px-2 py-1">الكود</th>
                 <th className="border px-2 py-1">اسم المنتج</th>
@@ -89,7 +89,7 @@ export default function ChocolateClientOrder() {
             </thead>
             <tbody>
               {chocolateStock.map((item) => (
-                <tr key={item.code} className="hover:bg-amber-100">
+                <tr key={item.code} className="hover:bg-amber-100 text-center">
                   <td className="border px-2 py-1">
                     <div className="w-[60px] h-[60px] overflow-hidden mx-auto">
                       <img
@@ -108,7 +108,7 @@ export default function ChocolateClientOrder() {
                     <input
                       type="number"
                       min="0"
-                      className="w-20 text-center border rounded"
+                      className="w-full max-w-[80px] text-center border rounded"
                       value={order[item.code] || ""}
                       onChange={(e) => handleQuantityChange(item.code, e.target.value)}
                     />
@@ -118,26 +118,28 @@ export default function ChocolateClientOrder() {
             </tbody>
           </table>
 
-          <div className="text-right text-sm font-semibold mb-4">
+          <div className="text-right text-sm font-semibold mt-4">
             <p>📦 إجمالي العلب: {totalBoxes} علبة</p>
             <p>⚖️ إجمالي الوزن: {totalWeight} كجم</p>
           </div>
-        </>
+        </div>
       )}
 
-      <button
-        onClick={handleSubmit}
-        className="bg-chocolate text-white px-6 py-2 rounded hover:opacity-90"
-      >
-        طلب
-      </button>
+      <div className="flex flex-col sm:flex-row justify-center gap-4 mt-6">
+        <button
+          onClick={handleSubmit}
+          className="bg-chocolate text-white px-6 py-2 rounded hover:opacity-90"
+        >
+          طلب
+        </button>
 
-      <button
-        onClick={() => router.push("/client-home")}
-        className="mt-4 bg-gray-300 text-chocolate px-6 py-2 rounded hover:opacity-90"
-      >
-        ⬅️ العودة للمخازن
-      </button>
+        <button
+          onClick={() => router.push("/client-home")}
+          className="bg-gray-300 text-chocolate px-6 py-2 rounded hover:opacity-90"
+        >
+          ⬅️ العودة للمخازن
+        </button>
+      </div>
 
       {modalImage && (
         <div
