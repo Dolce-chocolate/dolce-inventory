@@ -2,34 +2,42 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/app/firebase";
-import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, addDoc, query, orderBy, limit } from "firebase/firestore";
 
 export default function WarehouseDispensePage() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
+    const storedUser = localStorage.getItem("username") || "أمين مخزن";
+    setUsername(storedUser);
+
     const fetchProducts = async () => {
       const snapshot = await getDocs(collection(db, "products"));
-      const allProducts = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const allProducts = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setProducts(allProducts);
     };
 
     const fetchOrders = async () => {
       const snapshot = await getDocs(collection(db, "orders"));
-      const allOrders = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const allOrders = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setOrders(allOrders);
     };
 
     fetchProducts();
     fetchOrders();
   }, []);
+
+  const generateInvoiceNumber = async () => {
+    const q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(1));
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) return "00001";
+
+    const lastInvoice = snapshot.docs[0].data().invoiceNumber || "00000";
+    const next = String(parseInt(lastInvoice) + 1).padStart(5, "0");
+    return next;
+  };
 
   const handleDispense = async (orderId, orderDetails) => {
     const orderRef = doc(db, "orders", orderId);
@@ -42,12 +50,14 @@ export default function WarehouseDispensePage() {
       await updateDoc(prodDoc, { quantity: newQuantity });
     }
 
-    const invoiceWindow = window.open("", "Invoice", "width=800,height=600");
+    const invoiceNumber = await generateInvoiceNumber();
     const now = new Date();
     const time = now.toLocaleTimeString();
     const date = now.toLocaleDateString("ar-EG");
-    const warehouseUser = localStorage.getItem("username") || "أمين مخزن";
 
+    await updateDoc(orderRef, { invoiceNumber, createdAt: new Date() });
+
+    const invoiceWindow = window.open("", "Invoice", "width=800,height=600");
     invoiceWindow.document.write(`
       <html dir="rtl">
         <head>
@@ -67,7 +77,7 @@ export default function WarehouseDispensePage() {
           <div class="info">
             <div>التاريخ: ${date}</div>
             <div>الوقت: ${time}</div>
-            <div>رقم الفاتورة: ${orderId}</div>
+            <div>رقم الفاتورة: ${invoiceNumber}</div>
           </div>
 
           <div class="header">
@@ -96,7 +106,7 @@ export default function WarehouseDispensePage() {
           </table>
 
           <div class="footer">
-            <div>اسم أمين المخزن: ${warehouseUser}</div>
+            <div>اسم أمين المخزن: ${username}</div>
             <div>توقيع المستلم: ...................</div>
           </div>
 
@@ -111,10 +121,7 @@ export default function WarehouseDispensePage() {
     alert("✅ تم صرف الطلب وتم إصدار الفاتورة");
 
     const snapshot = await getDocs(collection(db, "orders"));
-    const updatedOrders = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const updatedOrders = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     setOrders(updatedOrders);
   };
 
@@ -157,9 +164,7 @@ export default function WarehouseDispensePage() {
                   <td className="border px-2 py-1">
                     {relatedOrder ? (
                       <button
-                        onClick={() =>
-                          handleDispense(relatedOrder.id, relatedOrder)
-                        }
+                        onClick={() => handleDispense(relatedOrder.id, relatedOrder)}
                         className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
                       >
                         صرف
