@@ -26,17 +26,21 @@ export default function UnifiedLogin() {
       localStorage.setItem("currentUser", matchedUser.username);
       localStorage.setItem("role", matchedUser.role);
 
-      if (matchedUser.role === "admin") router.push("/dashboard");
-      else if (matchedUser.role === "warehouse") router.push("/warehouse-dashboard");
-      else router.push("/client-home");
+      setTimeout(() => {
+        if (matchedUser.role === "admin") router.push("/dashboard");
+        else if (matchedUser.role === "warehouse") router.push("/warehouse-dashboard");
+        else router.push("/client-home");
+      }, 100);
     } else if (
       username.trim().toLowerCase() === "admin" &&
       password === "0000"
     ) {
-      // دخول طارئ
       localStorage.setItem("currentUser", "admin");
       localStorage.setItem("role", "admin");
-      router.push("/dashboard");
+
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 100);
     } else {
       setError("❌ اسم المستخدم أو كلمة المرور غير صحيحة");
     }
