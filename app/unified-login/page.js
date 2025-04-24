@@ -29,6 +29,14 @@ export default function UnifiedLogin() {
       if (matchedUser.role === "admin") router.push("/dashboard");
       else if (matchedUser.role === "warehouse") router.push("/warehouse-dashboard");
       else router.push("/client-home");
+    } else if (
+      username.trim().toLowerCase() === "admin" &&
+      password === "0000"
+    ) {
+      // دخول طارئ
+      localStorage.setItem("currentUser", "admin");
+      localStorage.setItem("role", "admin");
+      router.push("/dashboard");
     } else {
       setError("❌ اسم المستخدم أو كلمة المرور غير صحيحة");
     }
