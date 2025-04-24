@@ -7,14 +7,8 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 export default function WarehouseDispensePage() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [warehouseUser, setWarehouseUser] = useState("");
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const username = localStorage.getItem("username") || "أمين مخزن";
-      setWarehouseUser(username);
-    }
-
     const fetchProducts = async () => {
       const snapshot = await getDocs(collection(db, "products"));
       const allProducts = snapshot.docs.map((doc) => ({
@@ -52,6 +46,7 @@ export default function WarehouseDispensePage() {
     const now = new Date();
     const time = now.toLocaleTimeString();
     const date = now.toLocaleDateString("ar-EG");
+    const warehouseUser = localStorage.getItem("username") || "أمين مخزن";
 
     invoiceWindow.document.write(`
       <html dir="rtl">
