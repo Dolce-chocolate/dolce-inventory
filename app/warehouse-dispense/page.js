@@ -18,14 +18,15 @@ export default function WarehouseDispensePage() {
       setProducts(allProducts);
     });
 
-    const fetchOrders = async () => {
-      const snapshot = await getDocs(collection(db, "orders"));
+    const unsubscribeOrders = onSnapshot(collection(db, "orders"), (snapshot) => {
       const allOrders = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setOrders(allOrders);
-    };
+    });
 
-    fetchOrders();
-    return () => unsubscribeProducts();
+    return () => {
+      unsubscribeProducts();
+      unsubscribeOrders();
+    };
   }, []);
 
   const generateInvoiceNumber = async () => {
@@ -119,10 +120,6 @@ export default function WarehouseDispensePage() {
 
     invoiceWindow.document.close();
     alert("✅ تم صرف الطلب وتم إصدار الفاتورة");
-
-    const snapshot = await getDocs(collection(db, "orders"));
-    const updatedOrders = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setOrders(updatedOrders);
   };
 
   return (
@@ -157,7 +154,7 @@ export default function WarehouseDispensePage() {
                   <td className="border px-2 py-1">{item.name}</td>
                   <td className="border px-2 py-1">{item.quantity}</td>
                   <td className="border px-2 py-1">
-                    {item.weight && item.quantity
+                    {item.category === "chocolate" && item.weight && item.quantity
                       ? Number(item.weight) * Number(item.quantity) + " كجم"
                       : "-"}
                   </td>
