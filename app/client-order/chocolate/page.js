@@ -65,7 +65,7 @@ export default function ChocolateClientOrder() {
     }
   };
 
-  const totalWeight = chocolateStock.reduce((sum, item) => sum + Number(item.weight || 0), 0);
+  const totalWeight = chocolateStock.reduce((sum, item) => sum + (Number(item.weight || 0) * Number(item.quantity || 0)), 0);
   const totalBoxes = chocolateStock.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
 
   return (
@@ -103,7 +103,11 @@ export default function ChocolateClientOrder() {
                   <td className="border px-2 py-1">{item.code}</td>
                   <td className="border px-2 py-1">{item.name}</td>
                   <td className="border px-2 py-1">{item.quantity}</td>
-                  <td className="border px-2 py-1">{item.weight}</td>
+                  <td className="border px-2 py-1">
+                    {item.weight && item.quantity
+                      ? (Number(item.weight) * Number(item.quantity)).toFixed(2) + " كجم"
+                      : "-"}
+                  </td>
                   <td className="border px-2 py-1">
                     <input
                       type="number"
@@ -120,7 +124,7 @@ export default function ChocolateClientOrder() {
 
           <div className="text-right text-sm font-semibold mt-4">
             <p>📦 إجمالي العلب: {totalBoxes} علبة</p>
-            <p>⚖️ إجمالي الوزن: {totalWeight} كجم</p>
+            <p>⚖️ إجمالي الوزن: {totalWeight.toFixed(2)} كجم</p>
           </div>
         </div>
       )}
