@@ -2,65 +2,81 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/app/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import Image from "next/image";
+import { collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
 
-export default function AdminChocolateStock() {
+export default function ChocolateStockPage() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const snapshot = await getDocs(collection(db, "products"));
-      const allProducts = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setProducts(allProducts);
-    };
+    const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
+      const chocolateItems = snapshot.docs
+        .map((doc) => ({ id: doc.id, ...doc.data() }))
+        .filter((item) => item.category === "chocolate");
+      setProducts(chocolateItems);
+    });
 
-    fetchProducts();
+    return () => unsubscribe();
   }, []);
+
+  const handleQuantityChange = async (id, newQuantity) => {
+    if (isNaN(newQuantity) || newQuantity < 0) return;
+    const productRef = doc(db, "products", id);
+    await updateDoc(productRef, { quantity: Number(newQuantity) });
+  };
 
   return (
     <main className="p-6">
-      <h1 className="text-xl font-bold mb-4">📦 مخزن الشكلاطة (لوحة تحكم الأدمن)</h1>
+      <h1 className="text-xl font-bold mb-4">🍫 مخزن الشكلاطة (أدمن)</h1>
       <a href="/dashboard" className="text-blue-600 underline mb-4 block">⬅️ العودة إلى لوحة التحكم</a>
       {products.length === 0 ? (
         <p>لا توجد منتجات حالياً.</p>
       ) : (
-        <table className="min-w-full border text-sm">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border px-2 py-1">الصورة</th>
-              <th className="border px-2 py-1">الكود</th>
-              <th className="border px-2 py-1">الاسم</th>
-              <th className="border px-2 py-1">الكمية</th>
-              <th className="border px-2 py-1">الوزن بالكيلو</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((item) => (
-              <tr key={item.id}>
-                <td className="border px-2 py-1">
-                  <div className="w-16 h-16 overflow-hidden">
-                    <Image
-                      src={`/${item.image}`}
-                      alt={item.name}
-                      width={64}
-                      height={64}
-                      className="hover:scale-150 transition-transform duration-300 cursor-zoom-in"
-                    />
-                  </div>
-                </td>
-                <td className="border px-2 py-1">{item.code}</td>
-                <td className="border px-2 py-1">{item.name}</td>
-                <td className="border px-2 py-1">{item.quantity}</td>
-                <td className="border px-2 py-1">
-                  {item.weight && item.quantity
-                    ? (Number(item.weight) * Number(item.quantity)).toFixed(2) + " كجم"
-                    : "-"}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full border border-collapse text-sm">
+            <thead>
+              <tr className="bg-gray-200 text-center">
+                <th className="border px-3 py-2">الصورة</th>
+                <th className="border px-3 py-2">الكود</th>
+                <th className="border px-3 py-2">الاسم</th>
+                <th className="border px-3 py-2">الكمية</th>
+                <th className="border px-3 py-2">الوزن بالكيلو</th>
+                <th className="border px-3 py-2">تعديل</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {products.map((item) => (
+                <tr key={item.id} className="text-center">
+                  <td className="border px-2 py-1">
+                    <div className="w-14 h-14 overflow-hidden mx-auto">
+                      <img
+                        src={`/${item.image}`}
+                        alt={item.name}
+                        className="w-full h-full object-contain cursor-pointer transition-transform duration-300 hover:scale-[2.5]"
+                      />
+                    </div>
+                  </td>
+                  <td className="border px-2 py-1">{item.code}</td>
+                  <td className="border px-2 py-1">{item.name}</td>
+                  <td className="border px-2 py-1">{item.quantity}</td>
+                  <td className="border px-2 py-1">
+                    {item.weight && item.quantity
+                      ? (Number(item.weight) * Number(item.quantity)).toFixed(2) + " كجم"
+                      : "-"}
+                  </td>
+                  <td className="border px-2 py-1">
+                    <input
+                      type="number"
+                      min="0"
+                      className="w-20 border rounded text-center"
+                      defaultValue={item.quantity}
+                      onBlur={(e) => handleQuantityChange(item.id, e.target.value)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </main>
   );
