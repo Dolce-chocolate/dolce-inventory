@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { db } from "@/app/firebase";
+import { collection, getDocs } from "firebase/firestore";
 import Image from "next/image";
 
 export default function UnifiedLogin() {
@@ -9,35 +11,22 @@ export default function UnifiedLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [users, setUsers] = useState({});
 
-  useEffect(() => {
-    const url = window.location.href;
-    const fromLogout = url.includes("loggedout=true");
+  const handleLogin = async () => {
+    const snapshot = await getDocs(collection(db, "users"));
+    const users = snapshot.docs.map((doc) => doc.data());
 
-    const storedUsers = JSON.parse(localStorage.getItem("users") || "{}");
-    setUsers(storedUsers);
+    const matchedUser = users.find(
+      (user) => user.username === username && user.password === password
+    );
 
-    const savedUser = localStorage.getItem("currentUser");
-    const savedRole = localStorage.getItem("role");
+    if (matchedUser) {
+      localStorage.setItem("currentUser", matchedUser.username);
+      localStorage.setItem("role", matchedUser.role);
 
-    if (savedUser && savedRole && !fromLogout) {
-      if (savedRole === "admin") router.push("/dashboard");
-      else if (savedRole === "warehouse") router.push("/warehouse-dashboard");
-      else if (savedRole === "client") router.push("/client-home");
-    }
-  }, []);
-
-  const handleLogin = () => {
-    const user = users[username];
-
-    if (user && user.password === password) {
-      localStorage.setItem("currentUser", username);
-      localStorage.setItem("role", user.role);
-
-      if (user.role === "admin") router.push("/dashboard");
-      else if (user.role === "warehouse") router.push("/warehouse-dashboard");
-      else if (user.role === "client") router.push("/client-home");
+      if (matchedUser.role === "admin") router.push("/dashboard");
+      else if (matchedUser.role === "warehouse") router.push("/warehouse-dashboard");
+      else router.push("/client-home");
     } else {
       setError("❌ اسم المستخدم أو كلمة المرور غير صحيحة");
     }
@@ -46,9 +35,9 @@ export default function UnifiedLogin() {
   return (
     <main className="min-h-screen bg-amber-50 flex flex-col items-center justify-center p-4 text-chocolate">
       <Image src="/logo.png" alt="Dolce Logo" width={100} height={100} className="mb-6" />
-      <h1 className="text-2xl font-bold mb-4">🔐 تسجيل الدخول الموحد</h1>
+      <h1 className="text-2xl font-bold mb-4">🔐 تسجيل الدخول</h1>
 
-      <div className="w-full max-w-xs flex flex-col gap-3">
+      <div className="w-full max-w-[80%] flex flex-col gap-3">
         <input
           type="text"
           placeholder="اسم المستخدم"
