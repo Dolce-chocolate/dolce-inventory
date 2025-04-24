@@ -19,10 +19,17 @@ export default function ChocolateStockPage() {
   }, []);
 
   const handleQuantityChange = async (id, newQuantity) => {
-    if (isNaN(newQuantity) || newQuantity < 0) return;
+    const parsed = Number(newQuantity);
+    if (isNaN(parsed) || parsed < 0) return;
     const productRef = doc(db, "products", id);
-    await updateDoc(productRef, { quantity: Number(newQuantity) });
+    await updateDoc(productRef, { quantity: parsed });
   };
+
+  const totalQuantity = products.reduce((acc, item) => acc + (Number(item.quantity) || 0), 0);
+  const totalWeight = products.reduce(
+    (acc, item) => acc + (item.quantity && item.weight ? Number(item.quantity) * Number(item.weight) : 0),
+    0
+  );
 
   return (
     <main className="p-6">
@@ -65,8 +72,9 @@ export default function ChocolateStockPage() {
                   </td>
                   <td className="border px-2 py-1">
                     <input
-                      type="number"
-                      min="0"
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className="w-20 border rounded text-center"
                       defaultValue={item.quantity}
                       onBlur={(e) => handleQuantityChange(item.id, e.target.value)}
@@ -76,6 +84,10 @@ export default function ChocolateStockPage() {
               ))}
             </tbody>
           </table>
+          <div className="mt-4 text-right font-semibold text-sm">
+            <p>📦 إجمالي العلب: {totalQuantity}</p>
+            <p>⚖️ إجمالي الوزن: {totalWeight.toFixed(2)} كجم</p>
+          </div>
         </div>
       )}
     </main>
