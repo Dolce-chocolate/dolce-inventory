@@ -17,7 +17,9 @@ export default function UnifiedLogin() {
     const users = snapshot.docs.map((doc) => doc.data());
 
     const matchedUser = users.find(
-      (user) => user.username === username && user.password === password
+      (user) =>
+        user.username.trim().toLowerCase() === username.trim().toLowerCase() &&
+        user.password === password
     );
 
     if (matchedUser) {
