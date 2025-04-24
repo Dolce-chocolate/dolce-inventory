@@ -7,10 +7,14 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 export default function WarehouseDispensePage() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-
-  const warehouseUser = typeof window !== "undefined" ? localStorage.getItem("username") || "أمين مخزن" : "أمين مخزن";
+  const [warehouseUser, setWarehouseUser] = useState("");
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const username = localStorage.getItem("username") || "أمين مخزن";
+      setWarehouseUser(username);
+    }
+
     const fetchProducts = async () => {
       const snapshot = await getDocs(collection(db, "products"));
       const allProducts = snapshot.docs.map((doc) => ({
@@ -122,6 +126,7 @@ export default function WarehouseDispensePage() {
   return (
     <main className="p-6">
       <h1 className="text-xl font-bold mb-4">📦 صفحة صرف البضاعة</h1>
+      <a href="/warehouse-dashboard" className="text-blue-600 underline mb-4 block">⬅️ العودة إلى لوحة التحكم</a>
       {products.length === 0 ? (
         <p>لا توجد منتجات حالياً.</p>
       ) : (
