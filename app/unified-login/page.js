@@ -37,7 +37,7 @@ export default function UnifiedLogin() {
       <Image src="/logo.png" alt="Dolce Logo" width={100} height={100} className="mb-6" />
       <h1 className="text-2xl font-bold mb-4">🔐 تسجيل الدخول</h1>
 
-      <div className="w-full max-w-[80%] flex flex-col gap-3">
+      <div className="w-[80%] max-w-[320px] flex flex-col gap-3">
         <input
           type="text"
           placeholder="اسم المستخدم"
@@ -59,6 +59,7 @@ export default function UnifiedLogin() {
           دخول
         </button>
         {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+        <p className="text-red-500 text-center text-xs mt-2">🔥 إصدار المزامنة الجديد</p>
       </div>
     </main>
   );
