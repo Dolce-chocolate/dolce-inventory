@@ -35,7 +35,7 @@ export default function WarehouseDispensePage() {
     const orderRef = doc(db, "orders", orderId);
     await updateDoc(orderRef, { status: "تم الصرف" });
 
-    // توليد الفاتورة
+    const warehouseUser = localStorage.getItem("username") || "[اسم الأمين]";
     const invoiceWindow = window.open("", "Invoice", "width=800,height=600");
     invoiceWindow.document.write(`
       <html>
@@ -46,9 +46,11 @@ export default function WarehouseDispensePage() {
             table { margin: 20px auto; border-collapse: collapse; width: 60%; }
             th, td { border: 1px solid #000; padding: 8px; }
             .logo { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+            .date { text-align: right; font-size: 12px; margin-bottom: 10px; }
           </style>
         </head>
         <body>
+          <div class="date">${orderDetails.date}</div>
           <div class="logo">🍫 Dolce Chocolate</div>
           <h2>Invoice</h2>
           <table>
@@ -56,11 +58,10 @@ export default function WarehouseDispensePage() {
             <tr><th>Client Name</th><td>${orderDetails.client}</td></tr>
             <tr><th>Product Code</th><td>${orderDetails.code}</td></tr>
             <tr><th>Quantity</th><td>${orderDetails.quantity}</td></tr>
-            <tr><th>Date</th><td>${orderDetails.date}</td></tr>
-            <tr><th>Warehouse Officer</th><td>[اسم الأمين]</td></tr>
+            <tr><th>Warehouse Officer</th><td>${warehouseUser}</td></tr>
             <tr><th>Receiver Signature</th><td>...................</td></tr>
           </table>
-          <p>Thank you for choosing Dolce 🍫</p>
+          <p>Thanks 💝</p>
           <script>window.print();</script>
         </body>
       </html>
@@ -69,7 +70,6 @@ export default function WarehouseDispensePage() {
 
     alert("✅ تم صرف الطلب وتم إصدار الفاتورة");
 
-    // تحديث القائمة
     const snapshot = await getDocs(collection(db, "orders"));
     const updatedOrders = snapshot.docs.map((doc) => ({
       id: doc.id,
