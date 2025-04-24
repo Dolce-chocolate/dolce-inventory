@@ -53,7 +53,8 @@ export default function WarehouseDispensePage() {
     const invoiceNumber = await generateInvoiceNumber();
     const now = new Date();
     const time = now.toLocaleTimeString("en-US");
-    const date = now.toLocaleDateString("en-US");
+    const date = now.toLocaleDateString("en-GB").replace(/[\u0660-\u0669]/g, d => d.charCodeAt(0) - 1632);
+    const warehouseUser = username;
 
     await updateDoc(orderRef, { invoiceNumber, createdAt: new Date() });
 
@@ -106,7 +107,7 @@ export default function WarehouseDispensePage() {
           </table>
 
           <div class="footer">
-            <div>اسم أمين المخزن: ${username}</div>
+            <div>اسم أمين المخزن: ${warehouseUser}</div>
             <div>توقيع المستلم: ...................</div>
           </div>
 
