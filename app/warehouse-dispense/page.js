@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/app/firebase";
-import { collection, getDocs, doc, updateDoc, addDoc, query, orderBy, limit } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, query, orderBy, limit } from "firebase/firestore";
 
 export default function WarehouseDispensePage() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("أمين مخزن");
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("username") || "أمين مخزن";
-    setUsername(storedUser);
+    const loginInfo = localStorage.getItem("username");
+    if (loginInfo) setUsername(loginInfo);
 
     const fetchProducts = async () => {
       const snapshot = await getDocs(collection(db, "products"));
@@ -52,8 +52,8 @@ export default function WarehouseDispensePage() {
 
     const invoiceNumber = await generateInvoiceNumber();
     const now = new Date();
-    const time = now.toLocaleTimeString();
-    const date = now.toLocaleDateString("ar-EG");
+    const time = now.toLocaleTimeString("en-US");
+    const date = now.toLocaleDateString("en-US");
 
     await updateDoc(orderRef, { invoiceNumber, createdAt: new Date() });
 
