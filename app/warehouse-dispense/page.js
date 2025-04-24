@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/app/firebase";
-import { collection, getDocs, doc, updateDoc, query, orderBy, limit } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, query, orderBy, limit, onSnapshot } from "firebase/firestore";
 
 export default function WarehouseDispensePage() {
   const [products, setProducts] = useState([]);
@@ -13,11 +13,10 @@ export default function WarehouseDispensePage() {
     const loginInfo = localStorage.getItem("username");
     if (loginInfo) setUsername(loginInfo);
 
-    const fetchProducts = async () => {
-      const snapshot = await getDocs(collection(db, "products"));
+    const unsubscribeProducts = onSnapshot(collection(db, "products"), (snapshot) => {
       const allProducts = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setProducts(allProducts);
-    };
+    });
 
     const fetchOrders = async () => {
       const snapshot = await getDocs(collection(db, "orders"));
@@ -25,8 +24,8 @@ export default function WarehouseDispensePage() {
       setOrders(allOrders);
     };
 
-    fetchProducts();
     fetchOrders();
+    return () => unsubscribeProducts();
   }, []);
 
   const generateInvoiceNumber = async () => {
@@ -53,7 +52,7 @@ export default function WarehouseDispensePage() {
     const invoiceNumber = await generateInvoiceNumber();
     const now = new Date();
     const time = now.toLocaleTimeString("en-US");
-    const date = now.toLocaleDateString("en-GB").replace(/[\u0660-\u0669]/g, d => d.charCodeAt(0) - 1632);
+    const date = now.toLocaleDateString("en-GB").replace(/[٠-٩]/g, d => d.charCodeAt(0) - 1632);
     const warehouseUser = username;
 
     await updateDoc(orderRef, { invoiceNumber, createdAt: new Date() });
