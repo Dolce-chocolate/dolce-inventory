@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/app/firebase";
-import { collection, onSnapshot, updateDoc, doc } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
 export default function ChocolateStockWarehouse() {
   const [products, setProducts] = useState([]);
@@ -17,21 +17,15 @@ export default function ChocolateStockWarehouse() {
     return () => unsubscribe();
   }, []);
 
-  const handleQuantityChange = async (id, newQuantity) => {
-    if (isNaN(newQuantity) || newQuantity < 0) return;
-    const productRef = doc(db, "products", id);
-    await updateDoc(productRef, { quantity: Number(newQuantity) });
-  };
-
   return (
-    <main className="p-6">
+    <main className="p-4 sm:p-6 max-w-screen overflow-x-auto">
       <h1 className="text-2xl font-bold text-center mb-4">🍫 Chocolate Stock</h1>
 
       {products.length === 0 ? (
         <p className="text-center">لا توجد منتجات حالياً.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border border-collapse text-sm">
+        <div className="overflow-x-auto w-full">
+          <table className="min-w-[600px] sm:w-full border border-collapse text-sm">
             <thead>
               <tr className="bg-gray-200 text-center">
                 <th className="border px-3 py-2">الصورة</th>
@@ -39,7 +33,6 @@ export default function ChocolateStockWarehouse() {
                 <th className="border px-3 py-2">الاسم</th>
                 <th className="border px-3 py-2">الكمية</th>
                 <th className="border px-3 py-2">الوزن بالكيلو</th>
-                <th className="border px-3 py-2">تعديل</th>
               </tr>
             </thead>
             <tbody>
@@ -61,15 +54,6 @@ export default function ChocolateStockWarehouse() {
                     {item.weight && item.quantity
                       ? (Number(item.weight) * Number(item.quantity)).toFixed(2) + " كجم"
                       : "-"}
-                  </td>
-                  <td className="border px-2 py-1">
-                    <input
-                      type="number"
-                      min="0"
-                      className="w-20 border rounded text-center"
-                      defaultValue={item.quantity}
-                      onBlur={(e) => handleQuantityChange(item.id, e.target.value)}
-                    />
                   </td>
                 </tr>
               ))}
