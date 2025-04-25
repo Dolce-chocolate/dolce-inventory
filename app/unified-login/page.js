@@ -45,8 +45,8 @@ export default function UnifiedLogin() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#1e1e2f] p-4">
-      <div className="bg-[#2e2e3e] text-white rounded-xl shadow-lg p-8 w-full max-w-sm text-center">
-        <h1 className="text-3xl font-bold text-yellow-400 mb-6">DOLCE</h1>
+      <div className="bg-[#2e2e3e] text-white rounded-xl shadow-lg p-8 w-full max-w-xs text-center">
+        <h1 className="text-3xl font-bold mb-6" style={{ color: '#FFF4B9' }}>DOLCE</h1>
 
         <div className="flex flex-col gap-4">
           <input
@@ -54,14 +54,14 @@ export default function UnifiedLogin() {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="p-3 bg-[#1e1e2f] border border-gray-600 rounded-md text-sm text-white placeholder-gray-400 focus:outline-none"
+            className="p-2 bg-[#1e1e2f] border border-gray-600 rounded-md text-sm text-white placeholder-gray-400 focus:outline-none"
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="p-3 bg-[#1e1e2f] border border-gray-600 rounded-md text-sm text-white placeholder-gray-400 focus:outline-none"
+            className="p-2 bg-[#1e1e2f] border border-gray-600 rounded-md text-sm text-white placeholder-gray-400 focus:outline-none"
           />
           <button
             onClick={handleLogin}
