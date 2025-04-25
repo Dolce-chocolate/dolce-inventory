@@ -27,35 +27,6 @@ export default function ChocolateStockWarehouse() {
     <main className="p-6">
       <h1 className="text-2xl font-bold text-center mb-4">🍫 Chocolate Stock</h1>
 
-      <div className="flex justify-center mb-6">
-        <button
-          type="button"
-          className="bg-white text-center w-48 rounded-2xl h-14 relative text-black text-xl font-semibold border-4 border-white group"
-          onClick={() => window.location.href = "/warehouse-dashboard"}
-        >
-          <div
-            className="bg-green-400 rounded-xl h-12 w-1/4 grid place-items-center absolute left-0 top-0 group-hover:w-full z-10 duration-500"
-          >
-            <svg
-              width="25px"
-              height="25px"
-              viewBox="0 0 1024 1024"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill="#000000"
-                d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
-              ></path>
-              <path
-                fill="#000000"
-                d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
-              ></path>
-            </svg>
-          </div>
-          <p className="translate-x-4">Go Back</p>
-        </button>
-      </div>
-
       {products.length === 0 ? (
         <p className="text-center">لا توجد منتجات حالياً.</p>
       ) : (
@@ -106,6 +77,16 @@ export default function ChocolateStockWarehouse() {
           </table>
         </div>
       )}
+
+      <div className="flex justify-center mt-10">
+        <button
+          onClick={() => window.location.href = "/warehouse-dashboard"}
+          className="relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-white rounded-xl group border border-gray-300 shadow-md"
+        >
+          <span className="w-48 h-48 rounded rotate-[-40deg] bg-green-400 absolute bottom-0 left-0 -translate-x-full translate-y-full mb-9 ml-3 transition-all duration-500 group-hover:mb-32 group-hover:ml-0 group-hover:translate-x-0"></span>
+          <span className="relative w-full text-left text-black transition-colors duration-300 ease-in-out group-hover:text-white">⬅️ Go Back</span>
+        </button>
+      </div>
     </main>
   );
 }
