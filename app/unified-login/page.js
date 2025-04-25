@@ -2,78 +2,68 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { db } from "@/app/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import Image from "next/image";
 
 export default function UnifiedLogin() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [users, setUsers] = useState({});
 
-  const handleLogin = async () => {
-    const snapshot = await getDocs(collection(db, "users"));
-    const users = snapshot.docs.map((doc) => doc.data());
+  useEffect(() => {
+    const url = window.location.href;
+    const fromLogout = url.includes("loggedout=true");
+    const storedUsers = JSON.parse(localStorage.getItem("users") || "{}");
+    setUsers(storedUsers);
 
-    const matchedUser = users.find(
-      (user) =>
-        user.username.trim().toLowerCase() === username.trim().toLowerCase() &&
-        user.password === password
-    );
+    const savedUser = localStorage.getItem("currentUser");
+    const savedRole = localStorage.getItem("role");
+    if (savedUser && savedRole && !fromLogout) {
+      if (savedRole === "admin") router.push("/dashboard");
+      else if (savedRole === "warehouse") router.push("/warehouse-dashboard");
+      else if (savedRole === "client") router.push("/client-home");
+    }
+  }, [router]);
 
-    if (matchedUser) {
-      localStorage.setItem("currentUser", matchedUser.username);
-      localStorage.setItem("role", matchedUser.role);
-
-      setTimeout(() => {
-        if (matchedUser.role === "admin") router.push("/dashboard");
-        else if (matchedUser.role === "warehouse") router.push("/warehouse-dashboard");
-        else router.push("/client-home");
-      }, 100);
-    } else if (
-      username.trim().toLowerCase() === "admin" &&
-      password === "0000"
-    ) {
-      localStorage.setItem("currentUser", "admin");
-      localStorage.setItem("role", "admin");
-
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 100);
+  const handleLogin = () => {
+    const user = users[username];
+    if (user && user.password === password) {
+      localStorage.setItem("currentUser", username);
+      localStorage.setItem("role", user.role);
+      if (user.role === "admin") router.push("/dashboard");
+      else if (user.role === "warehouse") router.push("/warehouse-dashboard");
+      else if (user.role === "client") router.push("/client-home");
     } else {
       setError("❌ اسم المستخدم أو كلمة المرور غير صحيحة");
     }
   };
 
   return (
-    <main className="min-h-screen bg-amber-50 flex flex-col items-center justify-center p-4 text-chocolate">
-      <Image src="/logo.png" alt="Dolce Logo" width={100} height={100} className="mb-6" />
-      <h1 className="text-2xl font-bold mb-4">🔐 تسجيل الدخول</h1>
-
-      <div className="w-[80%] max-w-[320px] flex flex-col gap-3">
+    <main className="min-h-screen bg-gradient-to-br from-yellow-100 to-yellow-300 flex flex-col items-center justify-center p-4">
+      <h1 className="text-3xl font-extrabold text-yellow-800 mb-8">DOLCE</h1>
+      <div className="bg-white shadow-lg rounded-2xl w-full max-w-sm p-6 flex flex-col gap-4">
+        <h2 className="text-center text-2xl font-bold text-gray-800">Login</h2>
         <input
           type="text"
-          placeholder="اسم المستخدم"
+          placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="p-2 border rounded text-center"
+          className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
         />
         <input
           type="password"
-          placeholder="كلمة المرور"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border rounded text-center"
+          className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
         />
         <button
           onClick={handleLogin}
-          className="bg-chocolate text-white py-2 rounded hover:opacity-90"
+          className="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition-all"
         >
-          دخول
+          Login
         </button>
-        {error && <p className="text-red-600 text-sm text-center">{error}</p>}
-        <p className="text-red-500 text-center text-xs mt-2">🔥 إصدار المزامنة الجديد</p>
+        {error && <p className="text-center text-sm text-red-600">{error}</p>}
       </div>
     </main>
   );
