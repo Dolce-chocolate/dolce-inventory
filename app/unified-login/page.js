@@ -18,8 +18,8 @@ export default function UnifiedLogin() {
         where("username", "==", username),
         where("password", "==", password)
       );
-      const snapshot = await getDocs(q);
 
+      const snapshot = await getDocs(q);
       if (!snapshot.empty) {
         const user = snapshot.docs[0].data();
         localStorage.setItem("currentUser", user.username);
@@ -33,7 +33,7 @@ export default function UnifiedLogin() {
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("حدث خطأ أثناء تسجيل الدخول.");
+      setError("⚠️ حدث خطأ أثناء تسجيل الدخول");
     }
   };
 
