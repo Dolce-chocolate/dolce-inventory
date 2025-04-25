@@ -2,42 +2,30 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/app/firebase";
 
 export default function UnifiedLogin() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [users, setUsers] = useState({});
 
-  useEffect(() => {
-    const url = window.location.href;
-    const fromLogout = url.includes("loggedout=true");
+  const handleLogin = async () => {
+    const snapshot = await getDocs(collection(db, "users"));
+    const users = snapshot.docs.map((doc) => doc.data());
 
-    const storedUsers = JSON.parse(localStorage.getItem("users") || "{}");
-    setUsers(storedUsers);
+    const matchedUser = users.find(
+      (u) => u.username === username && u.password === password
+    );
 
-    const savedUser = localStorage.getItem("currentUser");
-    const savedRole = localStorage.getItem("role");
+    if (matchedUser) {
+      localStorage.setItem("currentUser", matchedUser.username);
+      localStorage.setItem("role", matchedUser.role);
 
-    if (savedUser && savedRole && !fromLogout) {
-      if (savedRole === "admin") router.push("/dashboard");
-      else if (savedRole === "warehouse") router.push("/warehouse-dashboard");
-      else if (savedRole === "client") router.push("/client-home");
-    }
-  }, []);
-
-  const handleLogin = () => {
-    const user = users[username];
-
-    if (user && user.password === password) {
-      localStorage.setItem("currentUser", username);
-      localStorage.setItem("role", user.role);
-
-      if (user.role === "admin") router.push("/dashboard");
-      else if (user.role === "warehouse") router.push("/warehouse-dashboard");
-      else if (user.role === "client") router.push("/client-home");
+      if (matchedUser.role === "admin") router.push("/dashboard");
+      else if (matchedUser.role === "warehouse") router.push("/warehouse-dashboard");
+      else if (matchedUser.role === "client") router.push("/client-home");
     } else {
       setError("❌ اسم المستخدم أو كلمة المرور غير صحيحة");
     }
