@@ -1,45 +1,61 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function AdminDashboard() {
   const router = useRouter();
 
-  useEffect(() => {
-    const role = localStorage.getItem("role");
-    if (role !== "admin") {
-      router.push("/unified-login");
-    }
-  }, [router]);
-
   return (
-    <main className="min-h-screen bg-[url('/dolcedo.jpeg')] bg-cover bg-center flex flex-col items-center justify-center p-6">
-      <h1 className="text-4xl font-bold text-white mb-10 drop-shadow-lg">لوحة تحكم Dolce</h1>
+    <main className="min-h-screen bg-cover bg-center flex flex-col items-center justify-start p-6" style={{ backgroundImage: 'url("/dolcedo.jpeg")' }}>
+      <h1 className="text-3xl font-bold text-[#362B1D] mt-8 mb-8">لوحة تحكم <span className="text-[#362B1D]">Dolce</span></h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-        <button
-          onClick={() => router.push("/chocolate")}
-          className="w-full h-20 rounded-lg bg-white text-black font-semibold text-xl shadow-md transition-transform duration-300 transform hover:scale-105 relative overflow-hidden group"
-        >
-          <span className="absolute inset-0 bg-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-          <span className="relative z-10">🥇 مخزن الشكلاطة</span>
-        </button>
+      <div className="flex flex-col gap-4 items-center w-full max-w-sm">
+        <Link href="/chocolate" legacyBehavior>
+          <a className="bg-[#E8E0D2] hover:bg-[#d5c6af] transition duration-200 text-[#362B1D] font-bold py-3 px-6 rounded-xl shadow-md w-full text-center">
+            🍫 مخزن الشكلاطة
+          </a>
+        </Link>
+
+        <Link href="/packs" legacyBehavior>
+          <a className="bg-[#E8E0D2] hover:bg-[#d5c6af] transition duration-200 text-[#362B1D] font-bold py-3 px-6 rounded-xl shadow-md w-full text-center">
+            📦 مخزن الباكوّات
+          </a>
+        </Link>
+
+        <Link href="/cafe" legacyBehavior>
+          <a className="bg-[#E8E0D2] hover:bg-[#d5c6af] transition duration-200 text-[#362B1D] font-bold py-3 px-6 rounded-xl shadow-md w-full text-center">
+            ☕ مخزن الكافي
+          </a>
+        </Link>
+
+        <Link href="/search" legacyBehavior>
+          <a className="mt-6 bg-white text-[#362B1D] border border-[#362B1D] px-5 py-2 rounded-lg hover:bg-[#f2f2f2] w-full text-center">
+            🔍 البحث بالكود
+          </a>
+        </Link>
+
+        <Link href="/admin-dashboard/manage-users" legacyBehavior>
+          <a className="bg-white text-[#362B1D] border border-[#362B1D] px-5 py-2 rounded-lg hover:bg-[#f2f2f2] w-full text-center">
+            👥 إدارة المستخدمين
+          </a>
+        </Link>
+
+        <Link href="/reports" legacyBehavior>
+          <a className="bg-white text-[#362B1D] border border-[#362B1D] px-5 py-2 rounded-lg hover:bg-[#f2f2f2] w-full text-center">
+            📈 التقارير
+          </a>
+        </Link>
 
         <button
-          onClick={() => router.push("/packs")}
-          className="w-full h-20 rounded-lg bg-white text-black font-semibold text-xl shadow-md transition-transform duration-300 transform hover:scale-105 relative overflow-hidden group"
+          onClick={() => {
+            localStorage.clear();
+            router.push("/unified-login?loggedout=true");
+          }}
+          className="mt-8 bg-red-500 text-white font-semibold px-6 py-2 rounded hover:bg-red-600"
         >
-          <span className="absolute inset-0 bg-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-          <span className="relative z-10">📦 مخزن الباكوات</span>
-        </button>
-
-        <button
-          onClick={() => router.push("/cafe")}
-          className="w-full h-20 rounded-lg bg-white text-black font-semibold text-xl shadow-md transition-transform duration-300 transform hover:scale-105 relative overflow-hidden group"
-        >
-          <span className="absolute inset-0 bg-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-          <span className="relative z-10">☕️ مخزن الكافي</span>
+          تسجيل الخروج
         </button>
       </div>
     </main>
