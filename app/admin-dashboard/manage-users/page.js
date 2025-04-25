@@ -2,43 +2,38 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { db } from "@/app/firebase";
-import { collection, addDoc, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 
 export default function ManageUsersPage() {
   const router = useRouter();
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState({});
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("client");
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setUsers(userList);
-    });
-
-    return () => unsubscribe();
+    const storedUsers = JSON.parse(localStorage.getItem("users") || "{}");
+    setUsers(storedUsers);
   }, []);
 
-  const handleAddUser = async () => {
+  const handleAddUser = () => {
     if (!username || !password) return alert("يرجى تعبئة كل الحقول");
 
-    try {
-      await addDoc(collection(db, "users"), { username, password, role });
-      setUsername("");
-      setPassword("");
-    } catch (error) {
-      alert("❌ حدث خطأ أثناء الإضافة");
-    }
+    const updatedUsers = {
+      ...users,
+      [username]: { password, role },
+    };
+
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    setUsers(updatedUsers);
+    setUsername("");
+    setPassword("");
   };
 
-  const handleDeleteUser = async (id) => {
-    try {
-      await deleteDoc(doc(db, "users", id));
-    } catch (error) {
-      alert("❌ حدث خطأ أثناء الحذف");
-    }
+  const handleDeleteUser = (name) => {
+    const updated = { ...users };
+    delete updated[name];
+    localStorage.setItem("users", JSON.stringify(updated));
+    setUsers(updated);
   };
 
   return (
@@ -87,19 +82,19 @@ export default function ManageUsersPage() {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td className="border px-3 py-1">{user.username}</td>
+          {Object.entries(users).map(([name, info]) => (
+            <tr key={name}>
+              <td className="border px-3 py-1">{name}</td>
               <td className="border px-3 py-1">
-                {user.role === "client"
+                {info.role === "client"
                   ? "عميل"
-                  : user.role === "warehouse"
+                  : info.role === "warehouse"
                   ? "أمين مخزن"
                   : "أدمن"}
               </td>
               <td className="border px-3 py-1">
                 <button
-                  onClick={() => handleDeleteUser(user.id)}
+                  onClick={() => handleDeleteUser(name)}
                   className="text-red-600 hover:underline"
                 >
                   حذف
