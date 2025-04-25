@@ -9,42 +9,42 @@ export default function AdminDashboard() {
 
   return (
     <main className="min-h-screen bg-cover bg-center flex flex-col items-center justify-start p-6" style={{ backgroundImage: 'url("/dolcedo.jpeg")' }}>
-      <h1 className="text-3xl font-bold text-[#362B1D] mt-8 mb-8">لوحة تحكم <span className="text-[#362B1D]">Dolce</span></h1>
+      <h1 className="text-3xl font-bold text-[#FFF4B9] mt-8 mb-8">DOLCE</h1>
 
       <div className="flex flex-col gap-4 items-center w-full max-w-sm">
         <Link href="/chocolate" legacyBehavior>
-          <a className="bg-[#E8E0D2] hover:bg-[#d5c6af] transition duration-200 text-[#362B1D] font-bold py-3 px-6 rounded-xl shadow-md w-full text-center">
-            🍫 مخزن الشكلاطة
+          <a className="group relative w-full inline-flex items-center justify-center overflow-hidden rounded-xl bg-[#E8E0D2] px-6 py-3 font-bold text-[#362B1D] shadow-md hover:bg-[#d5c6af] transition-all">
+            <span className="z-10">🍫 مخزن الشكلاطة</span>
           </a>
         </Link>
 
         <Link href="/packs" legacyBehavior>
-          <a className="bg-[#E8E0D2] hover:bg-[#d5c6af] transition duration-200 text-[#362B1D] font-bold py-3 px-6 rounded-xl shadow-md w-full text-center">
-            📦 مخزن الباكوّات
+          <a className="group relative w-full inline-flex items-center justify-center overflow-hidden rounded-xl bg-[#E8E0D2] px-6 py-3 font-bold text-[#362B1D] shadow-md hover:bg-[#d5c6af] transition-all">
+            <span className="z-10">📦 مخزن الباكوّات</span>
           </a>
         </Link>
 
         <Link href="/cafe" legacyBehavior>
-          <a className="bg-[#E8E0D2] hover:bg-[#d5c6af] transition duration-200 text-[#362B1D] font-bold py-3 px-6 rounded-xl shadow-md w-full text-center">
-            ☕ مخزن الكافي
+          <a className="group relative w-full inline-flex items-center justify-center overflow-hidden rounded-xl bg-[#E8E0D2] px-6 py-3 font-bold text-[#362B1D] shadow-md hover:bg-[#d5c6af] transition-all">
+            <span className="z-10">☕ مخزن الكافي</span>
           </a>
         </Link>
 
         <Link href="/search" legacyBehavior>
-          <a className="mt-6 bg-white text-[#362B1D] border border-[#362B1D] px-5 py-2 rounded-lg hover:bg-[#f2f2f2] w-full text-center">
-            🔍 البحث بالكود
+          <a className="group relative w-full inline-flex items-center justify-center overflow-hidden rounded-xl bg-white px-6 py-3 text-[#362B1D] border border-[#362B1D] font-medium shadow-sm hover:bg-[#f2f2f2] transition-all">
+            <span className="z-10">🔍 البحث بالكود</span>
           </a>
         </Link>
 
         <Link href="/admin-dashboard/manage-users" legacyBehavior>
-          <a className="bg-white text-[#362B1D] border border-[#362B1D] px-5 py-2 rounded-lg hover:bg-[#f2f2f2] w-full text-center">
-            👥 إدارة المستخدمين
+          <a className="group relative w-full inline-flex items-center justify-center overflow-hidden rounded-xl bg-white px-6 py-3 text-[#362B1D] border border-[#362B1D] font-medium shadow-sm hover:bg-[#f2f2f2] transition-all">
+            <span className="z-10">👥 إدارة المستخدمين</span>
           </a>
         </Link>
 
         <Link href="/reports" legacyBehavior>
-          <a className="bg-white text-[#362B1D] border border-[#362B1D] px-5 py-2 rounded-lg hover:bg-[#f2f2f2] w-full text-center">
-            📈 التقارير
+          <a className="group relative w-full inline-flex items-center justify-center overflow-hidden rounded-xl bg-white px-6 py-3 text-[#362B1D] border border-[#362B1D] font-medium shadow-sm hover:bg-[#f2f2f2] transition-all">
+            <span className="z-10">📈 التقارير</span>
           </a>
         </Link>
 
