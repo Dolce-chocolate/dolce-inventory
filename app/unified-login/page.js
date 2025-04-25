@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/app/firebase";
 
 export default function UnifiedLogin() {
@@ -12,22 +12,28 @@ export default function UnifiedLogin() {
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
-    const snapshot = await getDocs(collection(db, "users"));
-    const users = snapshot.docs.map((doc) => doc.data());
+    try {
+      const q = query(
+        collection(db, "users"),
+        where("username", "==", username),
+        where("password", "==", password)
+      );
+      const snapshot = await getDocs(q);
 
-    const matchedUser = users.find(
-      (u) => u.username === username && u.password === password
-    );
+      if (!snapshot.empty) {
+        const user = snapshot.docs[0].data();
+        localStorage.setItem("currentUser", user.username);
+        localStorage.setItem("role", user.role);
 
-    if (matchedUser) {
-      localStorage.setItem("currentUser", matchedUser.username);
-      localStorage.setItem("role", matchedUser.role);
-
-      if (matchedUser.role === "admin") router.push("/dashboard");
-      else if (matchedUser.role === "warehouse") router.push("/warehouse-dashboard");
-      else if (matchedUser.role === "client") router.push("/client-home");
-    } else {
-      setError("❌ اسم المستخدم أو كلمة المرور غير صحيحة");
+        if (user.role === "admin") router.push("/dashboard");
+        else if (user.role === "warehouse") router.push("/warehouse-dashboard");
+        else if (user.role === "client") router.push("/client-home");
+      } else {
+        setError("❌ اسم المستخدم أو كلمة المرور غير صحيحة");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("حدث خطأ أثناء تسجيل الدخول.");
     }
   };
 
