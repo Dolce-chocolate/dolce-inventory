@@ -7,7 +7,7 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   return (
-    <main className="min-h-screen bg-[#3e2723] text-[#3e2723] p-6 font-sans flex flex-col items-center">
+    <main className="min-h-screen bg-[#3e2723] text-[#3e2723] p-6 font-sans flex flex-col items-center justify-center">
       <h1 className="text-center text-4xl font-extrabold text-[#f5e8dc] mb-8 tracking-widest">
         DOLCE
       </h1>
@@ -58,6 +58,12 @@ export default function AdminDashboard() {
         >
           <img src="/log1.jpeg" alt="Logout" className="w-8 h-8" />
         </button>
+
+        <Link href="/admin-dashboard/add-product">
+          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
+            <img src="/add1.jpeg" alt="Add Product" className="w-8 h-8" />
+          </a>
+        </Link>
       </div>
     </main>
   );
