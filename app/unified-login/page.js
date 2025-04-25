@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function UnifiedLogin() {
   const router = useRouter();
@@ -43,44 +44,34 @@ export default function UnifiedLogin() {
   };
 
   return (
-    <main className="min-h-screen bg-[#1b1c24] flex items-center justify-center p-4">
-      <div className="bg-[#2a2b38] text-white p-8 rounded-xl w-full max-w-sm shadow-xl text-center">
-        <h1 className="text-3xl font-bold text-yellow-300 mb-6">LOG IN!</h1>
+    <main className="min-h-screen flex items-center justify-center bg-[#1e1e2f] p-4">
+      <div className="bg-[#2e2e3e] text-white rounded-xl shadow-lg p-8 w-full max-w-sm text-center">
+        <h1 className="text-3xl font-bold text-yellow-400 mb-6">DOLCE</h1>
 
-        <div className="mb-4">
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-300">@</span>
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-[#1b1c24] text-white border-none rounded px-10 py-2 focus:outline-none"
-            />
-          </div>
+        <div className="flex flex-col gap-4">
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="p-3 bg-[#1e1e2f] border border-gray-600 rounded-md text-sm text-white placeholder-gray-400 focus:outline-none"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="p-3 bg-[#1e1e2f] border border-gray-600 rounded-md text-sm text-white placeholder-gray-400 focus:outline-none"
+          />
+          <button
+            onClick={handleLogin}
+            className="bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-2 rounded-md transition duration-200"
+          >
+            LOGIN
+          </button>
         </div>
 
-        <div className="mb-6">
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-300">🔒</span>
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-[#1b1c24] text-white border-none rounded px-10 py-2 focus:outline-none"
-            />
-          </div>
-        </div>
-
-        <button
-          onClick={handleLogin}
-          className="bg-yellow-300 text-black font-bold py-2 px-6 rounded hover:opacity-90 mb-4"
-        >
-          LOGIN
-        </button>
-
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        {error && <p className="mt-4 text-red-500 text-sm">{error}</p>}
       </div>
     </main>
   );
