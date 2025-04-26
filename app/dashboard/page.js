@@ -33,13 +33,13 @@ export default function AdminDashboard() {
 
         <Link href="/cafe">
           <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/cofe1.jpeg" alt="Cafe" className="w-6 h-6" />
+            <img src="/cofe1.jpeg" alt="Coffee" className="w-6 h-6" />
           </a>
         </Link>
 
         <Link href="/admin-dashboard/manage-users">
           <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/manage.jpeg" alt="Manage Users" className="w-6 h-6" />
+            <img src="/manage.jpeg" alt="Manage" className="w-6 h-6" />
           </a>
         </Link>
 
@@ -49,7 +49,7 @@ export default function AdminDashboard() {
           </a>
         </Link>
 
-        <Link href="/admin-dashboard/add">
+        <Link href="/add">
           <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
             <img src="/add1.jpeg" alt="Add Product" className="w-6 h-6" />
           </a>
