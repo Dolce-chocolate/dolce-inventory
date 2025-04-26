@@ -1,69 +1,125 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { db } from "@/app/firebase"; 
+import { collection, addDoc } from "firebase/firestore";
 
-export default function AdminDashboard() {
+export default function AddProductPage() {
   const router = useRouter();
+  const [newItem, setNewItem] = useState({
+    code: "",
+    name: "",
+    quantity: "",
+    weight: "",
+    type: "",
+    store: "",
+    image: ""
+  });
+
+  const handleAdd = async () => {
+    if (!newItem.code || !newItem.name) {
+      alert("يرجى تعبئة الحقول الأساسية.");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "products"), {
+        code: newItem.code,
+        name: newItem.name,
+        quantity: Number(newItem.quantity),
+        weight: Number(newItem.weight),
+        type: newItem.type,
+        store: newItem.store,
+        image: newItem.image,
+        category: "chocolate", // أو يمكنك تخليها dynamic لو تبي
+      });
+
+      alert("✅ تمت إضافة الصنف إلى قاعدة البيانات بنجاح!");
+
+      setNewItem({
+        code: "",
+        name: "",
+        quantity: "",
+        weight: "",
+        type: "",
+        store: "",
+        image: ""
+      });
+    } catch (error) {
+      console.error("❌ خطأ أثناء إضافة الصنف:", error);
+      alert("حدث خطأ أثناء الإضافة. حاول مجددًا.");
+    }
+  };
 
   return (
-    <main className="min-h-screen bg-[#3e2723] text-[#3e2723] p-6 font-sans flex flex-col items-center justify-center">
-      <h1 className="text-center text-4xl font-extrabold text-[#f5e8dc] mb-8 tracking-widest">
-        DOLCE
-      </h1>
+    <main className="min-h-screen bg-[#f5e8dc] text-[#3e2723] flex flex-col items-center justify-center p-6">
+      <h1 className="text-3xl font-bold mb-6">➕ إضافة صنف جديد</h1>
 
-      <div className="grid grid-cols-3 gap-6 justify-items-center">
-        <Link href="/chocolate">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/choco1.jpeg" alt="Chocolate" className="w-6 h-6" />
-          </a>
-        </Link>
-
-        <Link href="/packs">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/pack1.jpeg" alt="Pack" className="w-6 h-6" />
-          </a>
-        </Link>
-
-        <Link href="/search">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/ffd1.jpeg" alt="Search" className="w-6 h-6" />
-          </a>
-        </Link>
-
-        <Link href="/cafe">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/cofe1.jpeg" alt="Coffee" className="w-6 h-6" />
-          </a>
-        </Link>
-
-        <Link href="/admin-dashboard/manage-users">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/manage.jpeg" alt="Manage" className="w-6 h-6" />
-          </a>
-        </Link>
-
-        <Link href="/reports">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/reports1.jpeg" alt="Reports" className="w-6 h-6" />
-          </a>
-        </Link>
+      <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md space-y-4">
+        <input
+          type="text"
+          placeholder="كود المنتج"
+          value={newItem.code}
+          onChange={(e) => setNewItem({ ...newItem, code: e.target.value })}
+          className="border p-2 w-full rounded text-black"
+        />
+        <input
+          type="text"
+          placeholder="اسم المنتج"
+          value={newItem.name}
+          onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+          className="border p-2 w-full rounded text-black"
+        />
+        <input
+          type="number"
+          placeholder="الكمية"
+          value={newItem.quantity}
+          onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
+          className="border p-2 w-full rounded text-black"
+        />
+        <input
+          type="number"
+          placeholder="الوزن بالكيلو"
+          value={newItem.weight}
+          onChange={(e) => setNewItem({ ...newItem, weight: e.target.value })}
+          className="border p-2 w-full rounded text-black"
+        />
+        <input
+          type="text"
+          placeholder="نوع المنتج"
+          value={newItem.type}
+          onChange={(e) => setNewItem({ ...newItem, type: e.target.value })}
+          className="border p-2 w-full rounded text-black"
+        />
+        <input
+          type="text"
+          placeholder="اسم المخزن"
+          value={newItem.store}
+          onChange={(e) => setNewItem({ ...newItem, store: e.target.value })}
+          className="border p-2 w-full rounded text-black"
+        />
+        <input
+          type="text"
+          placeholder="اسم الصورة (مثلاً choco1.jpeg)"
+          value={newItem.image}
+          onChange={(e) => setNewItem({ ...newItem, image: e.target.value })}
+          className="border p-2 w-full rounded text-black"
+        />
 
         <button
-          onClick={() => {
-            localStorage.clear();
-            router.push("/unified-login?loggedout=true");
-          }}
-          className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95"
+          onClick={handleAdd}
+          className="bg-[#3e2723] text-white font-bold py-2 px-4 rounded w-full hover:bg-[#5d4037]"
         >
-          <img src="/log1.jpeg" alt="Logout" className="w-6 h-6" />
+          ➕ إضافة المنتج
         </button>
 
-        <Link href="/admin-dashboard/add">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/add1.jpeg" alt="Add Product" className="w-6 h-6" />
-          </a>
-        </Link>
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="text-[#3e2723] underline text-sm mt-2 w-full"
+        >
+          ⬅️ الرجوع للوحة التحكم
+        </button>
       </div>
     </main>
   );
