@@ -17,11 +17,11 @@ export default function AddPage() {
 
   const handleAdd = () => {
     if (!newItem.code || !newItem.name) {
-      alert("يرجى تعبئة الحقول الأساسية.");
+      alert("❌ يرجى تعبئة الحقول الأساسية.");
       return;
     }
 
-    console.log("تمت إضافة الصنف:", newItem);
+    console.log("✅ تمت إضافة الصنف:", newItem);
     alert("✅ تمت إضافة الصنف بنجاح!");
     setNewItem({
       code: "",
@@ -35,8 +35,8 @@ export default function AddPage() {
   };
 
   return (
-    <main className="min-h-screen bg-cream text-center py-10 px-4">
-      <h1 className="text-3xl font-bold text-chocolate mb-8">إضافة صنف جديد</h1>
+    <main className="min-h-screen bg-[#f5e8dc] text-center py-10 px-4">
+      <h1 className="text-3xl font-bold text-[#3e2723] mb-8">إضافة صنف جديد</h1>
 
       <div className="w-full max-w-md mx-auto bg-white p-6 rounded-xl shadow">
         <input
@@ -92,16 +92,16 @@ export default function AddPage() {
 
         <button
           onClick={handleAdd}
-          className="bg-gold text-white px-6 py-2 rounded mt-4 w-80 mx-auto block"
+          className="bg-[#cfa67a] text-white px-6 py-2 rounded mt-4 w-80 mx-auto block hover:brightness-90"
         >
           إضافة
         </button>
 
         <button
-          onClick={() => router.push("/")}
-          className="mt-4 underline text-chocolate text-sm w-80 mx-auto block"
+          onClick={() => router.push("/dashboard")}
+          className="mt-4 underline text-[#3e2723] text-sm w-80 mx-auto block"
         >
-          الرجوع للرئيسية
+          ⬅️ الرجوع للوحة التحكم
         </button>
       </div>
     </main>
