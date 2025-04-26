@@ -1,114 +1,61 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dolce Chocolate</title>
-  <style>
-    body {
-      background: linear-gradient(145deg, #3B2A1A, #5A3F28);
-      margin: 0;
-      padding: 20px;
-      font-family: 'Cairo', sans-serif;
-      text-align: center;
-      color: gold;
-    }
+"use client";
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 40px;
-      text-shadow: 0 0 8px gold;
-    }
+import { useRouter } from "next/navigation";
 
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 20px;
-      justify-items: center;
-      align-items: center;
-      max-width: 900px;
-      margin: auto;
-    }
+export default function DashboardPage() {
+  const router = useRouter();
 
-    .button {
-      background-color: #3B2A1A;
-      border-radius: 20px;
-      padding: 20px;
-      width: 150px;
-      height: 150px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 2px 2px 8px #000;
-      transition: all 0.3s ease;
-      text-decoration: none;
-    }
+  return (
+    <main dir="rtl" className="min-h-screen bg-gradient-to-br from-[#3B2A1A] to-[#5A3F28] p-5 text-center font-sans text-gold">
+      <h1 className="text-4xl font-extrabold mb-10 text-gold drop-shadow-lg">DOLCE CHOCOLATE</h1>
 
-    .button img {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 10px;
-      object-fit: contain;
-    }
+      <div className="grid grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <a href="/chocolate" className="bg-[#3B2A1A] rounded-2xl p-5 w-36 h-36 flex flex-col justify-center items-center shadow hover:shadow-gold transition transform hover:scale-105">
+          <img src="/choco1.jpeg" alt="مخزن الشكلاطه" className="w-20 h-20 mb-2 object-contain" />
+          <span className="text-gold font-bold text-sm">مخزن الشكلاطه</span>
+        </a>
 
-    .button:hover {
-      box-shadow: 0 0 20px gold;
-      transform: scale(1.05);
-    }
+        <a href="/packs" className="bg-[#3B2A1A] rounded-2xl p-5 w-36 h-36 flex flex-col justify-center items-center shadow hover:shadow-gold transition transform hover:scale-105">
+          <img src="/pack1.jpeg" alt="مخزن الباكوات" className="w-20 h-20 mb-2 object-contain" />
+          <span className="text-gold font-bold text-sm">مخزن الباكوات</span>
+        </a>
 
-    .button span {
-      color: gold;
-      font-weight: bold;
-      font-size: 1rem;
-    }
-  </style>
-</head>
-<body>
+        <a href="/cafe" className="bg-[#3B2A1A] rounded-2xl p-5 w-36 h-36 flex flex-col justify-center items-center shadow hover:shadow-gold transition transform hover:scale-105">
+          <img src="/cafe1.jpeg" alt="مخزن الكافي" className="w-20 h-20 mb-2 object-contain" />
+          <span className="text-gold font-bold text-sm">مخزن الكافي</span>
+        </a>
 
-  <h1>DOLCE CHOCOLATE</h1>
+        <a href="/search" className="bg-[#3B2A1A] rounded-2xl p-5 w-36 h-36 flex flex-col justify-center items-center shadow hover:shadow-gold transition transform hover:scale-105">
+          <img src="/ffd1.jpeg" alt="البحث عن منتج" className="w-20 h-20 mb-2 object-contain" />
+          <span className="text-gold font-bold text-sm">البحث عن منتج</span>
+        </a>
 
-  <div class="grid-container">
-    <a href="/chocolate" class="button">
-      <img src="/choco1.jpeg" alt="مخزن الشكلاطه">
-      <span>مخزن الشكلاطه</span>
-    </a>
+        <a href="/admin-dashboard/manage-users" className="bg-[#3B2A1A] rounded-2xl p-5 w-36 h-36 flex flex-col justify-center items-center shadow hover:shadow-gold transition transform hover:scale-105">
+          <img src="/manage.jpeg" alt="إدارة المستخدمين" className="w-20 h-20 mb-2 object-contain" />
+          <span className="text-gold font-bold text-sm">إدارة المستخدمين</span>
+        </a>
 
-    <a href="/packs" class="button">
-      <img src="/pack1.jpeg" alt="مخزن الباكوات">
-      <span>مخزن الباكوات</span>
-    </a>
+        <a href="/reports" className="bg-[#3B2A1A] rounded-2xl p-5 w-36 h-36 flex flex-col justify-center items-center shadow hover:shadow-gold transition transform hover:scale-105">
+          <img src="/reports1.jpeg" alt="التقارير" className="w-20 h-20 mb-2 object-contain" />
+          <span className="text-gold font-bold text-sm">التقارير</span>
+        </a>
 
-    <a href="/cafe" class="button">
-      <img src="/cafe1.jpeg" alt="مخزن الكافي">
-      <span>مخزن الكافي</span>
-    </a>
+        <a href="/dashboard/add" className="bg-[#3B2A1A] rounded-2xl p-5 w-36 h-36 flex flex-col justify-center items-center shadow hover:shadow-gold transition transform hover:scale-105">
+          <img src="/add1.jpeg" alt="إضافة منتج" className="w-20 h-20 mb-2 object-contain" />
+          <span className="text-gold font-bold text-sm">إضافة منتج</span>
+        </a>
 
-    <a href="/search" class="button">
-      <img src="/ffd1.jpeg" alt="البحث عن منتج">
-      <span>البحث عن منتج</span>
-    </a>
-
-    <a href="/admin-dashboard/manage-users" class="button">
-      <img src="/manage.jpeg" alt="إدارة المستخدمين">
-      <span>إدارة المستخدمين</span>
-    </a>
-
-    <a href="/reports" class="button">
-      <img src="/reports1.jpeg" alt="التقارير">
-      <span>التقارير</span>
-    </a>
-
-    <a href="/dashboard/add" class="button">
-      <img src="/add1.jpeg" alt="إضافة منتج">
-      <span>إضافة منتج</span>
-    </a>
-
-    <a href="/unified-login" onclick="localStorage.clear()" class="button">
-      <img src="/log1.jpeg" alt="تسجيل الخروج">
-      <span>تسجيل الخروج</span>
-    </a>
-  </div>
-
-</body>
-</html>
+        <button
+          onClick={() => {
+            localStorage.clear();
+            router.push("/unified-login");
+          }}
+          className="bg-[#3B2A1A] rounded-2xl p-5 w-36 h-36 flex flex-col justify-center items-center shadow hover:shadow-gold transition transform hover:scale-105"
+        >
+          <img src="/log1.jpeg" alt="تسجيل الخروج" className="w-20 h-20 mb-2 object-contain" />
+          <span className="text-gold font-bold text-sm">تسجيل الخروج</span>
+        </button>
+      </div>
+    </main>
+  );
+}
