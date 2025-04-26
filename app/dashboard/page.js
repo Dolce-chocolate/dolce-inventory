@@ -14,45 +14,45 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-3 gap-6 justify-items-center">
         <Link href="/chocolate">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/choco1.jpeg" alt="Chocolate" className="w-6 h-6" />
-          </a>
+          <div className="w-24 h-24 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
+            <img src="/choco1.jpeg" alt="Chocolate" className="w-8 h-8" />
+          </div>
         </Link>
 
         <Link href="/packs">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/pack1.jpeg" alt="Pack" className="w-6 h-6" />
-          </a>
+          <div className="w-24 h-24 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
+            <img src="/pack1.jpeg" alt="Pack" className="w-8 h-8" />
+          </div>
         </Link>
 
         <Link href="/search">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/ffd1.jpeg" alt="Search" className="w-6 h-6" />
-          </a>
+          <div className="w-24 h-24 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
+            <img src="/ffd1.jpeg" alt="Search" className="w-8 h-8" />
+          </div>
         </Link>
 
         <Link href="/cafe">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/cofe1.jpeg" alt="Coffee" className="w-6 h-6" />
-          </a>
+          <div className="w-24 h-24 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
+            <img src="/cofe1.jpeg" alt="Coffee" className="w-8 h-8" />
+          </div>
         </Link>
 
         <Link href="/admin-dashboard/manage-users">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/manage.jpeg" alt="Manage" className="w-6 h-6" />
-          </a>
+          <div className="w-24 h-24 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
+            <img src="/manage.jpeg" alt="Manage" className="w-8 h-8" />
+          </div>
         </Link>
 
         <Link href="/reports">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/reports1.jpeg" alt="Reports" className="w-6 h-6" />
-          </a>
+          <div className="w-24 h-24 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
+            <img src="/reports1.jpeg" alt="Reports" className="w-8 h-8" />
+          </div>
         </Link>
 
         <Link href="/add">
-          <a className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
-            <img src="/add1.jpeg" alt="Add Product" className="w-6 h-6" />
-          </a>
+          <div className="w-24 h-24 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95">
+            <img src="/add1.jpeg" alt="Add Product" className="w-8 h-8" />
+          </div>
         </Link>
 
         <button
@@ -60,9 +60,9 @@ export default function AdminDashboard() {
             localStorage.clear();
             router.push("/unified-login?loggedout=true");
           }}
-          className="w-20 h-20 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95"
+          className="w-24 h-24 bg-[#f5e8dc] rounded-xl flex flex-col items-center justify-center shadow hover:brightness-95"
         >
-          <img src="/log1.jpeg" alt="Logout" className="w-6 h-6" />
+          <img src="/log1.jpeg" alt="Logout" className="w-8 h-8" />
         </button>
       </div>
     </main>
