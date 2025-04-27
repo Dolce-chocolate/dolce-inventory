@@ -5,26 +5,26 @@ import Link from 'next/link';
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#3B2A1A] to-[#5A3F28] flex flex-col items-center p-6">
-      <h1 className="text-5xl md:text-6xl font-bold text-[#FFD700] mb-12 drop-shadow-lg tracking-wide animate-pulse">
+    <div className="min-h-screen bg-[#f5e8dc] flex flex-col items-center p-6">
+      <h1 className="text-5xl md:text-6xl font-bold text-[#FFD700] mb-12 drop-shadow-lg tracking-wide">
         DOLCE CHOCOLATE
       </h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl w-full">
-        <Button src="/choco1.jpeg" label="مخزن الشكلاطه" href="/chocolate" />
-        <Button src="/pack1.jpeg" label="مخزن الباكوات" href="/packs" />
-        <Button src="/cafe1.jpeg" label="مخزن الكافي" href="/cafe" />
-        <Button src="/ffd1.jpeg" label="البحث عن منتج" href="/search" />
-        <Button src="/manage.jpeg" label="إدارة المستخدمين" href="/admin-dashboard/manage-users" />
-        <Button src="/reports1.jpeg" label="التقارير" href="/reports" />
-        <Button src="/add1.jpeg" label="إضافة منتج" href="/dashboard/add" />
-        <Button src="/log1.jpeg" label="تسجيل الخروج" href="/unified-login" clearStorage />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl w-full">
+        <Button src="/choco1.jpeg" href="/chocolate" />
+        <Button src="/pack1.jpeg" href="/packs" />
+        <Button src="/cafe1.jpeg" href="/cafe" />
+        <Button src="/ffd1.jpeg" href="/search" />
+        <Button src="/manage.jpeg" href="/admin-dashboard/manage-users" />
+        <Button src="/reports1.jpeg" href="/reports" />
+        <Button src="/add1.jpeg" href="/dashboard/add" />
+        <Button src="/log1.jpeg" href="/unified-login" clearStorage />
       </div>
     </div>
   );
 }
 
-function Button({ src, label, href, clearStorage }) {
+function Button({ src, href, clearStorage }) {
   const handleClick = () => {
     if (clearStorage) {
       localStorage.clear();
@@ -32,17 +32,14 @@ function Button({ src, label, href, clearStorage }) {
   };
 
   return (
-    <Link href={href} passHref>
+    <Link href={href}>
       <div
         onClick={handleClick}
-        className="bg-[#3B2A1A] rounded-2xl p-6 flex flex-col items-center justify-center shadow-lg transition-all hover:scale-105 hover:shadow-[0_0_20px_#FFD700] cursor-pointer"
+        className="bg-[#3B2A1A] p-8 rounded-3xl flex flex-col items-center justify-center shadow-lg transition-transform hover:scale-105 hover:shadow-[0_0_20px_#FFD700] cursor-pointer"
       >
-        <div className="w-24 h-24 relative mb-3">
-          <Image src={src} alt={label} width={80} height={80} className="object-contain" />
+        <div className="relative w-36 h-36">
+          <Image src={src} alt="Button" fill className="object-contain" />
         </div>
-        <span className="text-[#FFD700] font-bold text-center leading-tight">
-          {label}
-        </span>
       </div>
     </Link>
   );
