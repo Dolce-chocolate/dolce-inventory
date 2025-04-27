@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Dashboard() {
@@ -10,7 +9,7 @@ export default function Dashboard() {
         DOLCE CHOCOLATE
       </h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl w-full">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl w-full">
         <Button src="/choco1.jpeg" href="/chocolate" />
         <Button src="/pack1.jpeg" href="/packs" />
         <Button src="/cafe1.jpeg" href="/cafe" />
@@ -35,11 +34,13 @@ function Button({ src, href, clearStorage }) {
     <Link href={href}>
       <div
         onClick={handleClick}
-        className="bg-[#3B2A1A] p-8 rounded-3xl flex flex-col items-center justify-center shadow-lg transition-transform hover:scale-105 hover:shadow-[0_0_20px_#FFD700] cursor-pointer"
+        className="bg-[#3B2A1A] p-6 rounded-3xl flex flex-col items-center justify-center shadow-lg transition-transform hover:scale-105 hover:shadow-[0_0_20px_#FFD700] cursor-pointer"
       >
-        <div className="relative w-36 h-36">
-          <Image src={src} alt="Button" fill className="object-contain" />
-        </div>
+        <img
+          src={src}
+          alt="Button"
+          className="w-24 h-24 object-contain mb-2"
+        />
       </div>
     </Link>
   );
