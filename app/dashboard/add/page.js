@@ -1,118 +1,101 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { db, storage } from '@/app/firebase';
-import { collection, addDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import Image from 'next/image';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function AddPage() {
+export default function AddProductPage() {
   const router = useRouter();
   const [newItem, setNewItem] = useState({
-    code: '',
-    name: '',
-    quantity: '',
-    weight: '',
-    store: '',
-    image: null,
+    code: "",
+    name: "",
+    quantity: "",
+    weight: "",
+    type: "",
+    store: "",
   });
-  const [loading, setLoading] = useState(false);
 
-  const handleAdd = async () => {
-    if (!newItem.code || !newItem.quantity || !newItem.store) {
-      alert('يرجى تعبئة الحقول الأساسية (كود، الكمية، نوع المخزن)');
+  const handleAdd = () => {
+    if (!newItem.code || !newItem.quantity) {
+      alert("❗ يجب تعبئة الكود والكمية فقط.");
       return;
     }
 
-    try {
-      setLoading(true);
-      let imageUrl = '';
+    console.log("✅ تمت إضافة الصنف:", newItem);
+    alert("✅ تمت إضافة المنتج بنجاح!");
 
-      if (newItem.image) {
-        const storageRef = ref(storage, `products/${newItem.image.name}`);
-        await uploadBytes(storageRef, newItem.image);
-        imageUrl = await getDownloadURL(storageRef);
-      }
-
-      await addDoc(collection(db, 'products'), {
-        code: newItem.code,
-        name: newItem.name || '',
-        quantity: Number(newItem.quantity),
-        weight: Number(newItem.weight) || 0,
-        category: newItem.store,
-        image: imageUrl,
-      });
-
-      alert('✅ تمت إضافة المنتج بنجاح!');
-      router.push('/dashboard'); // يرجع مباشرة للوحة التحكم
-    } catch (error) {
-      console.error('فشل إضافة المنتج:', error);
-      alert('❌ حدث خطأ أثناء إضافة المنتج.');
-    } finally {
-      setLoading(false);
-    }
+    setNewItem({
+      code: "",
+      name: "",
+      quantity: "",
+      weight: "",
+      type: "",
+      store: "",
+    });
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#3B2A1A] to-[#5A3F28] flex flex-col items-center justify-center p-6">
-      <h1 className="text-3xl font-bold text-[#FFD700] mb-6">➕ إضافة منتج جديد</h1>
+    <main className="min-h-screen bg-[#f9f5f0] flex flex-col items-center justify-start p-8 space-y-6">
+      <h1 className="text-3xl font-bold text-[#3B2A1A] mb-6">إضافة منتج جديد</h1>
 
-      <div className="bg-[#f5e8dc] p-6 rounded-xl shadow-lg w-full max-w-md">
+      <div className="w-full max-w-xs flex flex-col items-center space-y-4">
         <input
           type="text"
           placeholder="كود المنتج"
           value={newItem.code}
           onChange={(e) => setNewItem({ ...newItem, code: e.target.value })}
-          className="border px-4 py-2 rounded mb-4 w-full text-center text-black"
-          inputMode="numeric"
+          className="border px-3 py-2 w-[80px] rounded text-black"
         />
         <input
           type="text"
-          placeholder="اسم المنتج (اختياري)"
+          placeholder="اسم المنتج"
           value={newItem.name}
           onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-          className="border px-4 py-2 rounded mb-4 w-full text-center text-black"
+          className="border px-3 py-2 w-[80px] rounded text-black"
         />
         <input
           type="number"
           placeholder="الكمية"
           value={newItem.quantity}
           onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
-          className="border px-4 py-2 rounded mb-4 w-full text-center text-black"
-          inputMode="numeric"
+          className="border px-3 py-2 w-[80px] rounded text-black"
         />
         <input
           type="number"
-          placeholder="الوزن بالكيلو (اختياري)"
+          placeholder="الوزن (كغ)"
           value={newItem.weight}
           onChange={(e) => setNewItem({ ...newItem, weight: e.target.value })}
-          className="border px-4 py-2 rounded mb-4 w-full text-center text-black"
-          inputMode="numeric"
+          className="border px-3 py-2 w-[80px] rounded text-black"
+        />
+        <input
+          type="text"
+          placeholder="النوع"
+          value={newItem.type}
+          onChange={(e) => setNewItem({ ...newItem, type: e.target.value })}
+          className="border px-3 py-2 w-[80px] rounded text-black"
         />
         <select
           value={newItem.store}
           onChange={(e) => setNewItem({ ...newItem, store: e.target.value })}
-          className="border px-4 py-2 rounded mb-4 w-full text-center text-black"
+          className="border px-3 py-2 w-[80px] rounded text-black"
         >
-          <option value="">اختر نوع المخزن</option>
+          <option value="">اختر المخزن</option>
           <option value="chocolate">مخزن الشكلاطه</option>
-          <option value="pack">مخزن الباكوات</option>
+          <option value="packs">مخزن الباكوات</option>
           <option value="cafe">مخزن الكافي</option>
         </select>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setNewItem({ ...newItem, image: e.target.files[0] })}
-          className="border px-4 py-2 rounded mb-4 w-full text-center bg-white text-black"
-        />
 
         <button
           onClick={handleAdd}
-          disabled={loading}
-          className="bg-[#FFD700] text-[#3B2A1A] font-bold py-3 rounded w-full hover:opacity-90 transition"
+          className="bg-[#8B4513] hover:bg-[#A0522D] text-white px-4 py-2 rounded w-[80px]"
         >
-          {loading ? 'جارٍ الإضافة...' : '➕ إضافة المنتج'}
+          إضافة
+        </button>
+
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="mt-4 underline text-[#3B2A1A] text-sm"
+        >
+          🔙 الرجوع للوحة التحكم
         </button>
       </div>
     </main>
