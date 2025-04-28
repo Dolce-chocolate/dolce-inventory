@@ -13,7 +13,7 @@ export default function AddProductPage() {
     name: "",
     quantity: "",
     weight: "",
-    store: "chocolate", // مبدئيًا مخزن الشكلاطه
+    store: "chocolate",
     imageFile: null,
   });
 
@@ -66,7 +66,7 @@ export default function AddProductPage() {
           placeholder="🔢 كود المنتج"
           value={product.code}
           onChange={(e) => setProduct({ ...product, code: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
+          className="w-[100px] mb-4 p-2 border rounded mx-auto block text-center"
         />
 
         <input
@@ -74,7 +74,7 @@ export default function AddProductPage() {
           placeholder="📦 اسم المنتج"
           value={product.name}
           onChange={(e) => setProduct({ ...product, name: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
+          className="w-[100px] mb-4 p-2 border rounded mx-auto block text-center"
         />
 
         <input
@@ -83,7 +83,7 @@ export default function AddProductPage() {
           placeholder="📦 الكمية"
           value={product.quantity}
           onChange={(e) => setProduct({ ...product, quantity: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
+          className="w-[100px] mb-4 p-2 border rounded mx-auto block text-center"
         />
 
         <input
@@ -92,13 +92,13 @@ export default function AddProductPage() {
           placeholder="⚖️ الوزن بالكيلو"
           value={product.weight}
           onChange={(e) => setProduct({ ...product, weight: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
+          className="w-[100px] mb-4 p-2 border rounded mx-auto block text-center"
         />
 
         <select
           value={product.store}
           onChange={(e) => setProduct({ ...product, store: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
+          className="w-[100px] mb-4 p-2 border rounded mx-auto block text-center"
         >
           <option value="chocolate">مخزن الشكلاطه</option>
           <option value="packs">مخزن الباكوات</option>
@@ -109,21 +109,21 @@ export default function AddProductPage() {
           type="file"
           accept="image/*"
           onChange={(e) => setProduct({ ...product, imageFile: e.target.files[0] })}
-          className="w-full mb-4"
+          className="w-[100px] mb-4 mx-auto block"
         />
 
         <button
           onClick={handleAddProduct}
-          className="w-full bg-brown-700 text-white py-2 rounded hover:bg-brown-800"
+          className="w-[100px] bg-brown-700 text-white py-2 rounded hover:bg-brown-800 mx-auto block"
         >
-          إضافة المنتج
+          إضافة
         </button>
 
         <button
           onClick={() => router.push("/dashboard")}
-          className="w-full mt-4 underline text-brown-700"
+          className="w-[100px] mt-4 underline text-brown-700 mx-auto block"
         >
-          ⬅️ العودة إلى لوحة التحكم
+          ⬅️ العودة
         </button>
       </div>
     </main>
