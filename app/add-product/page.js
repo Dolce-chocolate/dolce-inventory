@@ -1,128 +1,124 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { db } from '@/app/firebase';
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
 export default function AddProductPage() {
   const router = useRouter();
-  const [code, setCode] = useState("");
-  const [name, setName] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [weightPerBox, setWeightPerBox] = useState("");
-  const [image, setImage] = useState("");
-  const [storageType, setStorageType] = useState("chocolate");
-  const [error, setError] = useState("");
+  const [product, setProduct] = useState({
+    code: '',
+    name: '',
+    quantity: '',
+    weight: '',
+    store: 'chocolate'
+  });
 
-  useEffect(() => {
-    const role = localStorage.getItem("role");
-    if (role !== "admin") {
-      router.push("/unified-login");
-    }
-  }, [router]);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleSubmit = () => {
-    if (!code || !name || !quantity || !weightPerBox || !image) {
-      setError("❌ جميع الحقول مطلوبة.");
+  const handleAddProduct = async () => {
+    setError('');
+    setSuccess('');
+
+    if (!product.code || !product.quantity) {
+      setError('❌ يجب تعبئة كود المنتج والكمية.');
       return;
     }
 
-    const current = JSON.parse(localStorage.getItem(storageType) || "[]");
-    const exists = current.find((item) => item.code === code);
-    if (exists) {
-      setError("❌ الكود موجود مسبقًا!");
-      return;
+    try {
+      const existingQuery = query(
+        collection(db, 'products'),
+        where('code', '==', product.code),
+        where('store', '==', product.store)
+      );
+      const existingSnapshot = await getDocs(existingQuery);
+
+      if (!existingSnapshot.empty) {
+        setError('⚠️ الكود موجود بالفعل في نفس المخزن.');
+        return;
+      }
+
+      await addDoc(collection(db, 'products'), {
+        code: product.code,
+        name: product.name,
+        quantity: Number(product.quantity),
+        weight: Number(product.weight || 0),
+        store: product.store,
+        image: '' // لا يوجد رفع صور حالياً في الخطة المجانية
+      });
+
+      setSuccess('✅ تمت إضافة المنتج بنجاح!');
+      setProduct({ code: '', name: '', quantity: '', weight: '', store: 'chocolate' });
+    } catch (e) {
+      setError('❌ حدث خطأ أثناء الإضافة.');
+      console.error(e);
     }
-
-    const totalWeight = Number(quantity) * Number(weightPerBox);
-
-    const newProduct = {
-      code,
-      name,
-      quantity: Number(quantity),
-      weight: totalWeight,
-      image,
-    };
-
-    localStorage.setItem(storageType, JSON.stringify([...current, newProduct]));
-    alert("✅ تم إضافة المنتج بنجاح!");
-    setCode("");
-    setName("");
-    setQuantity("");
-    setWeightPerBox("");
-    setImage("");
-    setError("");
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const fileName = file.name;
-    setImage(fileName);
   };
 
   return (
-    <main className="min-h-screen bg-amber-50 p-6 text-chocolate text-center">
-      <h1 className="text-xl font-bold mb-6">➕ إضافة منتج جديد</h1>
+    <main className="min-h-screen bg-amber-50 p-6 text-center">
+      <h1 className="text-3xl font-bold text-brown-700 mb-6">➕ إضافة منتج جديد</h1>
 
-      <div className="flex flex-col gap-3 w-full max-w-sm mx-auto text-sm">
+      <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
+        {error && <p className="text-red-600 mb-2">{error}</p>}
+        {success && <p className="text-green-600 mb-2">{success}</p>}
+
         <input
           type="text"
-          placeholder="الكود"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          className="p-2 border rounded text-center"
+          placeholder="🔢 كود المنتج"
+          value={product.code}
+          onChange={(e) => setProduct({ ...product, code: e.target.value })}
+          className="w-full mb-4 p-2 border rounded text-right text-sm h-[100px]"
         />
+
         <input
           type="text"
-          placeholder="اسم المنتج"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="p-2 border rounded text-center"
+          placeholder="📦 اسم المنتج (اختياري)"
+          value={product.name}
+          onChange={(e) => setProduct({ ...product, name: e.target.value })}
+          className="w-full mb-4 p-2 border rounded text-right text-sm h-[100px]"
         />
+
         <input
           type="number"
-          placeholder="عدد العلب"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-          className="p-2 border rounded text-center"
+          placeholder="📦 الكمية"
+          value={product.quantity}
+          onChange={(e) => setProduct({ ...product, quantity: e.target.value })}
+          className="w-full mb-4 p-2 border rounded text-right text-sm h-[100px]"
         />
+
         <input
           type="number"
-          placeholder="وزن العلبة بالكيلو"
-          value={weightPerBox}
-          onChange={(e) => setWeightPerBox(e.target.value)}
-          className="p-2 border rounded text-center"
+          placeholder="⚖️ الوزن بالكيلو (اختياري)"
+          value={product.weight}
+          onChange={(e) => setProduct({ ...product, weight: e.target.value })}
+          className="w-full mb-4 p-2 border rounded text-right text-sm h-[100px]"
         />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="p-2 border rounded text-center"
-        />
+
         <select
-          value={storageType}
-          onChange={(e) => setStorageType(e.target.value)}
-          className="p-2 border rounded text-center"
+          value={product.store}
+          onChange={(e) => setProduct({ ...product, store: e.target.value })}
+          className="w-full mb-4 p-2 border rounded text-sm h-[100px]"
         >
-          <option value="chocolate">مخزن الشكلاطة</option>
-          <option value="packs">مخزن الباكوات</option>
-          <option value="cafe">مخزن الكافي</option>
+          <option value="chocolate">🍫 مخزن الشكلاطه</option>
+          <option value="packs">🎁 مخزن الباكوات</option>
+          <option value="cafe">☕ مخزن الكافي</option>
         </select>
 
-        {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
-
         <button
-          onClick={handleSubmit}
-          className="bg-chocolate text-white py-2 rounded hover:opacity-90"
+          onClick={handleAddProduct}
+          className="w-full bg-brown-700 text-white py-2 rounded hover:bg-brown-800"
         >
-          حفظ المنتج
+          إضافة المنتج
         </button>
 
         <button
-          onClick={() => router.push("/dashboard")}
-          className="bg-gray-300 text-chocolate px-4 py-2 rounded hover:opacity-80 mt-4"
+          onClick={() => router.push('/dashboard')}
+          className="w-full mt-4 underline text-brown-700"
         >
-          ⬅️ العودة للوحة التحكم
+          ⬅️ العودة إلى لوحة التحكم
         </button>
       </div>
     </main>
