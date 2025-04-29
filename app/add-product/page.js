@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { db } from '@/app/firebase';
+import { db, storage } from '@/app/firebase';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function AddProductPage() {
   const router = useRouter();
@@ -12,65 +13,80 @@ export default function AddProductPage() {
     name: '',
     quantity: '',
     weight: '',
-    store: 'chocolate'
+    store: 'chocolate',
+    imageFile: null,
   });
-
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleAddProduct = async () => {
-    setError('');
-    setSuccess('');
-
-    if (!product.code || !product.quantity) {
-      setError('❌ يجب تعبئة كود المنتج والكمية.');
+    if (!product.code.trim()) {
+      alert('⚠️ يجب تعبئة كود المنتج.');
       return;
     }
 
-    try {
-      const existingQuery = query(
-        collection(db, 'products'),
-        where('code', '==', product.code),
-        where('store', '==', product.store)
-      );
-      const existingSnapshot = await getDocs(existingQuery);
+    if (!product.quantity.trim()) {
+      alert('⚠️ يجب تعبئة الكمية.');
+      return;
+    }
 
-      if (!existingSnapshot.empty) {
-        setError('⚠️ الكود موجود بالفعل في نفس المخزن.');
+    setLoading(true);
+
+    try {
+      // تحقق من عدم تكرار الكود
+      const q = query(collection(db, 'products'), where('code', '==', product.code));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        alert('⚠️ الكود مستخدم من قبل، يرجى اختيار كود آخر.');
+        setLoading(false);
         return;
+      }
+
+      let imageUrl = '';
+
+      if (product.imageFile) {
+        const storageRef = ref(storage, `products/${product.imageFile.name}`);
+        await uploadBytes(storageRef, product.imageFile);
+        imageUrl = await getDownloadURL(storageRef);
       }
 
       await addDoc(collection(db, 'products'), {
         code: product.code,
-        name: product.name,
+        name: product.name || '',
         quantity: Number(product.quantity),
-        weight: Number(product.weight || 0),
+        weight: product.weight ? Number(product.weight) : 0,
         store: product.store,
-        image: '' // لا يوجد رفع صور حالياً في الخطة المجانية
+        image: imageUrl,
       });
 
-      setSuccess('✅ تمت إضافة المنتج بنجاح!');
-      setProduct({ code: '', name: '', quantity: '', weight: '', store: 'chocolate' });
-    } catch (e) {
-      setError('❌ حدث خطأ أثناء الإضافة.');
-      console.error(e);
+      alert('✅ تمت إضافة المنتج بنجاح!');
+      setProduct({
+        code: '',
+        name: '',
+        quantity: '',
+        weight: '',
+        store: 'chocolate',
+        imageFile: null,
+      });
+    } catch (error) {
+      console.error('❌ خطأ أثناء إضافة المنتج:', error);
+      alert('❌ حدث خطأ أثناء إضافة المنتج.');
     }
+
+    setLoading(false);
   };
 
   return (
-    <main className="min-h-screen bg-amber-50 p-6 text-center">
-      <h1 className="text-3xl font-bold text-brown-700 mb-6">➕ إضافة منتج جديد</h1>
+    <main className="min-h-screen bg-amber-50 p-6 flex flex-col items-center justify-start">
+      <h1 className="text-3xl font-bold text-brown-700 mb-8">➕ إضافة منتج جديد</h1>
 
-      <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
-        {error && <p className="text-red-600 mb-2">{error}</p>}
-        {success && <p className="text-green-600 mb-2">{success}</p>}
-
+      <div className="max-w-md w-full bg-white p-6 rounded-lg shadow-md">
         <input
           type="text"
-          placeholder="🔢 كود المنتج"
+          placeholder="🔢 كود المنتج (إجباري)"
           value={product.code}
           onChange={(e) => setProduct({ ...product, code: e.target.value })}
-          className="w-full mb-4 p-2 border rounded text-right text-sm h-[100px]"
+          className="w-[100px] mb-4 p-2 border rounded"
         />
 
         <input
@@ -78,15 +94,15 @@ export default function AddProductPage() {
           placeholder="📦 اسم المنتج (اختياري)"
           value={product.name}
           onChange={(e) => setProduct({ ...product, name: e.target.value })}
-          className="w-full mb-4 p-2 border rounded text-right text-sm h-[100px]"
+          className="w-[100px] mb-4 p-2 border rounded"
         />
 
         <input
           type="number"
-          placeholder="📦 الكمية"
+          placeholder="📦 الكمية (إجباري)"
           value={product.quantity}
           onChange={(e) => setProduct({ ...product, quantity: e.target.value })}
-          className="w-full mb-4 p-2 border rounded text-right text-sm h-[100px]"
+          className="w-[100px] mb-4 p-2 border rounded"
         />
 
         <input
@@ -94,24 +110,32 @@ export default function AddProductPage() {
           placeholder="⚖️ الوزن بالكيلو (اختياري)"
           value={product.weight}
           onChange={(e) => setProduct({ ...product, weight: e.target.value })}
-          className="w-full mb-4 p-2 border rounded text-right text-sm h-[100px]"
+          className="w-[100px] mb-4 p-2 border rounded"
         />
 
         <select
           value={product.store}
           onChange={(e) => setProduct({ ...product, store: e.target.value })}
-          className="w-full mb-4 p-2 border rounded text-sm h-[100px]"
+          className="w-[100px] mb-4 p-2 border rounded"
         >
-          <option value="chocolate">🍫 مخزن الشكلاطه</option>
-          <option value="packs">🎁 مخزن الباكوات</option>
-          <option value="cafe">☕ مخزن الكافي</option>
+          <option value="chocolate">مخزن الشكولاته</option>
+          <option value="packs">مخزن الباكوات</option>
+          <option value="cafe">مخزن الكافي</option>
         </select>
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setProduct({ ...product, imageFile: e.target.files[0] })}
+          className="w-[100px] mb-4"
+        />
 
         <button
           onClick={handleAddProduct}
-          className="w-full bg-brown-700 text-white py-2 rounded hover:bg-brown-800"
+          disabled={loading}
+          className="w-full bg-brown-700 text-white py-2 rounded hover:bg-brown-800 transition disabled:opacity-50"
         >
-          إضافة المنتج
+          {loading ? 'جاري الإضافة...' : '➕ إضافة المنتج'}
         </button>
 
         <button

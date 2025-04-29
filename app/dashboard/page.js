@@ -22,7 +22,7 @@ export default function Dashboard() {
           <Card href="/packs" icon="ri-gift-line" title="مخزن الباكوات" desc="إدارة التغليف ومجموعات الهدايا" />
           <Card href="/cafe" icon="ri-cup-line" title="مخزن الكافي" desc="إدارة حبوب القهوة والمنتجات" />
           <Card href="/search" icon="ri-search-line" title="البحث برمز المنتج" desc="البحث عن المنتجات بالرمز التعريفي" />
-          <Card href="/dashboard/add" icon="ri-add-circle-line" title="إضافة منتج جديد" desc="إنشاء إدخالات منتج جديدة" />
+          <Card href="/add" icon="ri-add-circle-line" title="إضافة منتج جديد" desc="إنشاء إدخالات منتج جديدة" />
           <Card href="/admin-dashboard/manage-users" icon="ri-user-settings-line" title="إدارة المستخدمين" desc="إضافة وتعديل مستخدمي النظام" />
           <Card href="/reports" icon="ri-file-chart-line" title="التقارير" desc="إنشاء تقارير المخزون والمبيعات" />
           <Card href="/unified-login" icon="ri-logout-box-line" title="تسجيل الخروج" desc="الخروج من نظام الإدارة" clearStorage />
